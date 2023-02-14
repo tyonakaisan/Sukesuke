@@ -1,0 +1,10 @@
+name: Sukesuke
+version: '${version}'
+main: github.tyonakaisan.sukesuke.Sukesuke
+api-version: 1.19
+depend: [ProtocolLib]
+
+commands:
+  suke:
+    usage: /<command>
+    description: こまんど

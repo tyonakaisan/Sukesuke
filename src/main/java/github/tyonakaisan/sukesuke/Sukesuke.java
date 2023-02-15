@@ -30,7 +30,7 @@ private static Sukesuke plugin;
 
         //packet
         new SelfPacketListener(this, protocolManager, armorManager);
-        new OthersPacketListener(this, protocolManager);
+        new OthersPacketListener(this, protocolManager, armorManager);
 
         //event
         getServer().getPluginManager().registerEvents(new ElytraListener(this, armorManager), this);

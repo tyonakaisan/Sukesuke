@@ -8,6 +8,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
 import github.tyonakaisan.sukesuke.Sukesuke;
+import github.tyonakaisan.sukesuke.manager.ArmorManager;
 import github.tyonakaisan.sukesuke.util.ProtocolUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -22,7 +23,7 @@ import java.util.List;
 public class OthersPacketListener {
     private final Sukesuke plugin;
 
-    public OthersPacketListener(Sukesuke plugin, ProtocolManager protocolManager) {
+    public OthersPacketListener(Sukesuke plugin, ProtocolManager protocolManager, ArmorManager armorManager) {
         this.plugin = plugin;
         protocolManager.addPacketListener(new PacketAdapter(plugin, PacketType.Play.Server.ENTITY_EQUIPMENT) {
             @Override
@@ -43,11 +44,31 @@ public class OthersPacketListener {
                 List<Pair<EnumWrappers.ItemSlot, ItemStack>> pairList = packet.getSlotStackPairLists().read(0);
 
                 pairList.stream().filter(ProtocolUtils::isArmorSlot).forEach(slotPair -> {
-                    if(slotPair.getSecond().getType().equals(Material.ELYTRA) && livPlayer.isGliding()){
-                        slotPair.setSecond(new ItemStack(Material.ELYTRA));
+                    //ヘルメット
+                    if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.HEAD) && livPlayer.getPersistentDataContainer().get(new NamespacedKey(plugin, "helmet"), PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                        slotPair.setSecond(slotPair.getSecond().clone());
                     }
-                    else if(!ignore(slotPair.getSecond()))
+                    //チェスト
+                    else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.CHEST) && livPlayer.getPersistentDataContainer().get(new NamespacedKey(plugin, "chest"), PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                        slotPair.setSecond(slotPair.getSecond().clone());
+                    }
+                    //レギンス
+                    else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.LEGS) && livPlayer.getPersistentDataContainer().get(new NamespacedKey(plugin, "leggings"), PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                        slotPair.setSecond(slotPair.getSecond().clone());
+                    }
+                    //ブーツ
+                    else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.FEET) && livPlayer.getPersistentDataContainer().get(new NamespacedKey(plugin, "boots"), PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                        slotPair.setSecond(slotPair.getSecond().clone());
+                    }
+                    //エリトラ
+                    else if (slotPair.getSecond().getType().equals(Material.ELYTRA) && livPlayer.isGliding()) {
+                        slotPair.setSecond(armorManager.HideArmor(slotPair.getSecond().clone(), livPlayer));
+                    }
+                    //透明
+                    else {
                         slotPair.setSecond(new ItemStack(Material.AIR));
+                    }
+
                 });
                 packet.getSlotStackPairLists().write(0, pairList);
             }

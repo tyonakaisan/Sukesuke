@@ -30,7 +30,11 @@ public class PlayerCommands implements CommandExecutor {
             Player player;
             player = (Player) sender;
             if (args.length == 1) {
-                armorManager.sendPacket(player);
+                if (args[0].equalsIgnoreCase("test")) {
+                    new PlayerSetKey(plugin).setToggleArmorType(player, "self_toggle");
+                    armorManager.sendPacket(player);
+                    return true;
+                }
             }
 
             new PlayerSetKey(plugin).setHideArmorType(player);

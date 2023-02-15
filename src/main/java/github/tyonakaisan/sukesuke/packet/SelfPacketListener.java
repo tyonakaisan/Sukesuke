@@ -35,19 +35,23 @@ public class SelfPacketListener {
                 }
 
                 //SET_SLOT
+                //アイテムを選択した時？
+                //ダメージを受けて耐久が減った時も
                 if (packet.getType().equals(PacketType.Play.Server.SET_SLOT) && packet.getIntegers().read(0).equals(0) && packet.getIntegers().read(2) > 4 && packet.getIntegers().read(2) < 9) {
                     ItemStack itemStack = packet.getItemModifier().read(0);
                     if (itemStack != null) {
-                        packet.getItemModifier().write(0, armorManager.HideArmor(itemStack));
+                        packet.getItemModifier().write(0, armorManager.HideArmor(itemStack, player));
                     }
                 }
 
                 //WINDOW_ITEMS
+                //アイテムが変わった時？
                 if (packet.getType().equals(PacketType.Play.Server.WINDOW_ITEMS) && packet.getIntegers().read(0).equals(0)) {
                     List<ItemStack> itemStacks = packet.getItemListModifier().read(0);
-                    itemStacks.stream().skip(5).limit(4).forEach(e -> {
-                        if (e != null) {
-                            e.setItemMeta(armorManager.HideArmor(e).getItemMeta());
+                    itemStacks.stream().skip(5).limit(4).forEach(item -> {
+                        System.out.println(item);
+                        if (item != null) {
+                            item.setItemMeta(armorManager.HideArmor(item, player).getItemMeta());
                         }
                     });
                 }

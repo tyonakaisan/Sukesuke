@@ -181,6 +181,9 @@ public class SettingsMenu extends AbstractMenu {
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("boots", view.viewer().player()), context -> new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "boots")), 4, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("self_toggle", view.viewer().player()), context -> {
                     new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "self_toggle");
+                    //なぜか自分視点の装備だけ切り替えることができない
+                    //他プレイヤー視点だと変わっている
+                    //gamemodeを変えた時はしっかり変わってる
                     armorManager.sendPacket(view.viewer().player());
                 }), 6, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("others_toggle", view.viewer().player()), context -> new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "others_toggle")), 7, 1))

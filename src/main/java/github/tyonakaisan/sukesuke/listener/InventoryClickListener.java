@@ -43,7 +43,7 @@ public class InventoryClickListener implements Listener {
         if ((armor.getType().toString().endsWith("_HELMET") && inv.getHelmet() == null) ||
                 ((armor.getType().toString().endsWith("_CHESTPLATE") || armor.getType().equals(Material.ELYTRA)) && inv.getChestplate() == null) ||
                 (armor.getType().toString().endsWith("_LEGGINGS") && inv.getLeggings() == null) ||
-                (armor.getType().toString().endsWith("_BOOTS") && inv.getBoots() == null)){
+                (armor.getType().toString().endsWith("_BOOTS") && inv.getBoots() == null)) {
             new BukkitRunnable(){
                 @Override
                 public void run() {

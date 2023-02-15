@@ -1,6 +1,5 @@
 package github.tyonakaisan.sukesuke.manager;
 
-import broccolai.corn.paper.item.PaperItemBuilder;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
@@ -22,10 +21,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.checkerframework.checker.units.qual.C;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -80,28 +77,67 @@ public class ArmorManager {
         ProtocolUtils.broadcastPlayerPacket(protocolManager, packetOthers, player);
     }
 
-    public ItemStack HideArmor(ItemStack itemStack) {
+    public ItemStack HideArmor(ItemStack itemStack, Player player) {
         if (itemStack.getType().equals(Material.AIR)) return itemStack;
 
-        // Getting item meta and lore
+
+        //meta
         ItemMeta itemMeta = itemStack.getItemMeta().clone();
 
-        // Adding item durability percentage to lore, if it has it
-        itemMeta.lore(List.of(getItemDurability(itemStack)));
+        //説明ぶん
+        itemMeta.lore(List.of(Component.text().build(),
+                getItemDurability(itemStack),
+                Component.text()
+                        .append(Component.text("非表示中!"))
+                        .decoration(TextDecoration.BOLD, true)
+                        .decoration(TextDecoration.ITALIC, false)
+                        .color(TextColor.color(NamedTextColor.GRAY))
+                        .build()));
+
+        //アイテム名
+        itemMeta.displayName(Component.text()
+                .append(Component.text("すけすけ"))
+                .decoration(TextDecoration.BOLD, true)
+                .decoration(TextDecoration.ITALIC, false)
+                .color(TextColor.fromCSSHexString("#00fa9a"))
+                .build());
 
         // ArmoredElytra mod compatibility
         if (itemStack.getType().equals(Material.ELYTRA)) {
             itemMeta = hideElytra(itemStack);
         }
-
-        // Changing armor material and name to its placeholder's, if it has one
-        itemStack.setType(Material.STONE_BUTTON);
+        else {
+            // Changing armor material and name to its placeholder's, if it has one
+            itemStack.setType(Material.STONE_BUTTON);
+        }
 
         // Applying item meta and lore
         itemStack.setItemMeta(itemMeta);
 
         return itemStack;
     }
+
+    /*
+    // PaperItemBuilder だと装備を切り替えた時に他の部位の装備も元に戻ってしまう(?)
+    //
+    public ItemStack HideArmor_v2(ItemStack itemStack) {
+        if (itemStack.getType().equals(Material.AIR)) {
+            return itemStack;
+        }
+        //meta copy
+        ItemMeta meta = itemStack.getItemMeta().clone();
+
+        ItemStack hide = PaperItemBuilder.ofType(Material.STONE_BUTTON)
+                .name(Component.text()
+                    .append(itemStack.displayName())
+                    .build())
+                .build();
+
+        hide.setItemMeta(meta);
+
+        return hide;
+    }
+     */
 
     public ItemMeta hideElytra(ItemStack itemStack){
         ItemMeta itemMeta = itemStack.getItemMeta();

@@ -30,7 +30,7 @@ public class PlayerCommands implements CommandExecutor {
             Player player;
             player = (Player) sender;
             if (args.length == 1) {
-                if (args[0].equalsIgnoreCase("test")) {
+                if (args[0].equalsIgnoreCase("toggle")) {
                     new PlayerSetKey(plugin).setToggleArmorType(player, "self_toggle");
                     armorManager.sendPacket(player);
                     return true;

@@ -167,7 +167,6 @@ public class ArmorManager {
     }
 
     private Component getItemDurability(ItemStack itemStack){
-        //int percentage = getDurabilityPer(itemStack);
         Damageable dmeta = (Damageable) itemStack.getItemMeta();
         int Damage = itemStack.getType().getMaxDurability();
         int mDamage = Damage - dmeta.getDamage();

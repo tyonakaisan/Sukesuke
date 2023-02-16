@@ -31,9 +31,9 @@ public class InventoryClickListener implements Listener {
         if (!(event.getClickedInventory() instanceof PlayerInventory)) {
             return;
         }
-        if (!event.isShiftClick()) {
-            return;
-        }
+        //if (!event.isShiftClick()) {
+        //    return;
+        //}
 
         PlayerInventory inv = player.getInventory();
         ItemStack armor = event.getCurrentItem();

@@ -37,23 +37,94 @@ public class SelfPacketListener {
                 //SET_SLOT
                 //アイテムを選択した時？
                 //ダメージを受けて耐久が減った時も
+                /*
                 if (packet.getType().equals(PacketType.Play.Server.SET_SLOT) && packet.getIntegers().read(0).equals(0) && packet.getIntegers().read(2) > 4 && packet.getIntegers().read(2) < 9) {
                     ItemStack itemStack = packet.getItemModifier().read(0);
                     if (itemStack != null) {
                         packet.getItemModifier().write(0, armorManager.HideArmor(itemStack, player));
                     }
                 }
+                 */
+
+                if (packet.getType().equals(PacketType.Play.Server.SET_SLOT) && packet.getIntegers().read(0).equals(0)) {
+                    switch (packet.getIntegers().read(2)) {
+                        case 5 -> {
+                            ItemStack itemStack = packet.getItemModifier().read(0);
+                            //false(表示)だったら
+                            if (player.getPersistentDataContainer().get(new NamespacedKey(plugin, "helmet"), PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                                packet.getItemModifier().write(0, itemStack);
+                            }
+                            //true(非表示)だったら
+                            else {
+                                packet.getItemModifier().write(0, armorManager.HideArmor(itemStack, player));
+                            }
+                        }
+                        case 6 -> {
+                            ItemStack itemStack = packet.getItemModifier().read(0);
+                            //false(表示)だったら
+                            if (player.getPersistentDataContainer().get(new NamespacedKey(plugin, "chest"), PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                                packet.getItemModifier().write(0, itemStack);
+                            }
+                            //true(非表示)だったら
+                            else {
+                                packet.getItemModifier().write(0, armorManager.HideArmor(itemStack, player));
+                            }
+                        }
+                        case 7 -> {
+                            ItemStack itemStack = packet.getItemModifier().read(0);
+                            //false(表示)だったら
+                            if (player.getPersistentDataContainer().get(new NamespacedKey(plugin, "leggings"), PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                                packet.getItemModifier().write(0, itemStack);
+                            }
+                            //true(非表示)だったら
+                            else {
+                                packet.getItemModifier().write(0, armorManager.HideArmor(itemStack, player));
+                            }
+                        }
+                        case 8 -> {
+                            ItemStack itemStack = packet.getItemModifier().read(0);
+                            //false(表示)だったら
+                            if (player.getPersistentDataContainer().get(new NamespacedKey(plugin, "boots"), PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                                packet.getItemModifier().write(0, itemStack);
+                            }
+                            //true(非表示)だったら
+                            else {
+                                packet.getItemModifier().write(0, armorManager.HideArmor(itemStack, player));
+                            }
+                        }
+                    }
+                }
 
                 //WINDOW_ITEMS
                 //アイテムが変わった時？
+
                 if (packet.getType().equals(PacketType.Play.Server.WINDOW_ITEMS) && packet.getIntegers().read(0).equals(0)) {
                     List<ItemStack> itemStacks = packet.getItemListModifier().read(0);
-                    itemStacks.stream().skip(5).limit(4).forEach(item -> {
-                        System.out.println(item);
+
+                    if (!player.getPersistentDataContainer().get(new NamespacedKey(plugin, "helmet"), PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                        ItemStack armor = itemStacks.get(5);
+                        armor.setItemMeta(armorManager.HideArmor(armor, player).getItemMeta());
+                    }
+                    else if (!player.getPersistentDataContainer().get(new NamespacedKey(plugin, "chest"), PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                        ItemStack armor = itemStacks.get(6);
+                        armor.setItemMeta(armorManager.HideArmor(armor, player).getItemMeta());
+                    }
+                    else if (!player.getPersistentDataContainer().get(new NamespacedKey(plugin, "leggings"), PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                        ItemStack armor = itemStacks.get(7);
+                        armor.setItemMeta(armorManager.HideArmor(armor, player).getItemMeta());
+                    }
+                    else if (!player.getPersistentDataContainer().get(new NamespacedKey(plugin, "boots"), PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                        ItemStack armor = itemStacks.get(8);
+                        armor.setItemMeta(armorManager.HideArmor(armor, player).getItemMeta());
+                    }
+                    /*
+                        itemStacks.stream().skip(5).limit(4).forEach(item -> {
                         if (item != null) {
                             item.setItemMeta(armorManager.HideArmor(item, player).getItemMeta());
                         }
                     });
+
+                     */
                 }
             }
         });

@@ -35,6 +35,26 @@ public class SettingsMenu extends AbstractMenu {
         this.armorManager = am;
     }
 
+    private static final ItemStack help = PaperItemBuilder.ofType(Material.WRITABLE_BOOK)
+            .name(Component.text()
+                    .append(Component.text("ヘルプ"))
+                    .decoration(TextDecoration.BOLD, true)
+                    .decoration(TextDecoration.ITALIC, false)
+                    .color(TextColor.fromCSSHexString("#00fa9a"))
+                    .build())
+            .lore(List.of(Component.text()
+                    .append(Component.text("この機能の使い方"))
+                    .decoration(TextDecoration.ITALIC, false)
+                    .color(NamedTextColor.GRAY)
+                    .build(),
+                    Component.text().build(),
+                    Component.text()
+                            .append(Component.text("クリックして確認する！"))
+                            .decoration(TextDecoration.ITALIC, false)
+                            .color(TextColor.fromCSSHexString("#ffd700"))
+                            .build()))
+            .build();
+
     private static final ItemStack helmet = PaperItemBuilder.ofType(Material.BARRIER)
             .name(Component.text()
                     .append(Component.text("ヘルメット"))
@@ -118,6 +138,11 @@ public class SettingsMenu extends AbstractMenu {
                             .append(Component.text("装備を表示/非表示にします!"))
                             .decoration(TextDecoration.ITALIC, false)
                             .color(NamedTextColor.WHITE)
+                            .build(),
+                    Component.text()
+                            .append(Component.text("準備中..."))
+                            .decoration(TextDecoration.ITALIC, false)
+                            .color(NamedTextColor.GRAY)
                             .build()))
             .build();
 
@@ -172,21 +197,24 @@ public class SettingsMenu extends AbstractMenu {
                 .addTransform(chest())
                 .addTransform(leggings())
                 .addTransform(boots())
-                .addTransform(chestItem(ItemStackElement.of(self_toggle), 6, 0))
-                .addTransform(chestItem(ItemStackElement.of(others_toggle), 7, 0))
+                //.addTransform(chestItem(ItemStackElement.of(self_toggle), 6, 0))
+                //.addTransform(chestItem(ItemStackElement.of(others_toggle), 7, 0))
                 //2段目
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("helmet", view.viewer().player()), context -> new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "helmet")), 1, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("chest", view.viewer().player()), context -> new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "chest")), 2, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("leggings", view.viewer().player()), context -> new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "leggings")), 3, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("boots", view.viewer().player()), context -> new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "boots")), 4, 1))
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("self_toggle", view.viewer().player()), context -> {
-                    new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "self_toggle");
+                .addTransform(chestItem(ItemStackElement.of(help), 6, 1))
+                //.addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("self_toggle", view.viewer().player()), context -> {
+                    //Player player = view.viewer().player();
+                    //new PlayerSetKey(plugin).setToggleArmorType(player, "self_toggle");
                     //なぜか自分視点の装備だけ切り替えることができない
                     //他プレイヤー視点だと変わっている
-                    //gamemodeを変えた時はしっかり変わってる
-                    armorManager.sendPacket(view.viewer().player());
-                }), 6, 1))
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("others_toggle", view.viewer().player()), context -> new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "others_toggle")), 7, 1))
+                    //toggleコマンドで代用
+                    //armorManager.sendPacket(player);
+                    //player.performCommand("suke toggle");
+                //}), 6, 1))
+                //.addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("others_toggle", view.viewer().player()), context -> new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "others_toggle")), 7, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(close, context -> context.viewer().close()), 8, 1))
         .build();
     }

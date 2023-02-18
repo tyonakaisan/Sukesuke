@@ -26,11 +26,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
-public class ArmorManager {
+public class ArmorPacketManager {
     private final Sukesuke plugin;
     private final ProtocolManager protocolManager;
 
-    public ArmorManager(Sukesuke pl, ProtocolManager pm) {
+    public ArmorPacketManager(Sukesuke pl, ProtocolManager pm) {
         this.plugin = pl;
         this.protocolManager = pm;
     }

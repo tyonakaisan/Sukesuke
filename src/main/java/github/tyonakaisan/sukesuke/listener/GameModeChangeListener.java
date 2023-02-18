@@ -1,7 +1,7 @@
 package github.tyonakaisan.sukesuke.listener;
 
 import github.tyonakaisan.sukesuke.Sukesuke;
-import github.tyonakaisan.sukesuke.manager.ArmorManager;
+import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
 import github.tyonakaisan.sukesuke.player.PlayerSetKey;
 import org.bukkit.GameMode;
 import org.bukkit.NamespacedKey;
@@ -14,11 +14,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class GameModeChangeListener implements Listener {
     Sukesuke plugin;
-    ArmorManager armorManager;
+    ArmorPacketManager armorPacketManager;
 
-    public GameModeChangeListener(Sukesuke pl, ArmorManager am){
+    public GameModeChangeListener(Sukesuke pl, ArmorPacketManager am){
         this.plugin = pl;
-        this.armorManager = am;
+        this.armorPacketManager = am;
     }
 
     @EventHandler
@@ -28,13 +28,13 @@ public class GameModeChangeListener implements Listener {
             //trueに強制戻し
             player.getPersistentDataContainer().set(new NamespacedKey(plugin, "self_toggle"), PersistentDataType.STRING, "true");
             new PlayerSetKey(plugin).setToggleArmorType(player, "self_toggle");
-            armorManager.sendPacket(player);
+            armorPacketManager.sendPacket(player);
         } else {
             new BukkitRunnable(){
                 @Override
                 public void run() {
                     new PlayerSetKey(plugin).setToggleArmorType(player, "self_toggle");
-                    armorManager.sendPacket(player);
+                    armorPacketManager.sendPacket(player);
                 }
             }.runTaskLater(plugin, 1L);
         }

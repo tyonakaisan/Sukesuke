@@ -1,7 +1,7 @@
 package github.tyonakaisan.sukesuke.listener;
 
 import github.tyonakaisan.sukesuke.Sukesuke;
-import github.tyonakaisan.sukesuke.manager.ArmorManager;
+import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -12,11 +12,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class ElytraListener implements Listener {
     Sukesuke plugin;
-    ArmorManager armorManager;
+    ArmorPacketManager armorPacketManager;
 
-    public ElytraListener(Sukesuke pl, ArmorManager am){
+    public ElytraListener(Sukesuke pl, ArmorPacketManager am){
         this.plugin = pl;
-        this.armorManager = am;
+        this.armorPacketManager = am;
     }
 
     @EventHandler
@@ -31,7 +31,7 @@ public class ElytraListener implements Listener {
         new BukkitRunnable(){
             @Override
             public void run() {
-                armorManager.sendPacket(player);
+                armorPacketManager.sendPacket(player);
             }
         }.runTaskLater(plugin, 1L);
     }

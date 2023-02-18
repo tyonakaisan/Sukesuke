@@ -8,7 +8,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
 import github.tyonakaisan.sukesuke.Sukesuke;
-import github.tyonakaisan.sukesuke.manager.ArmorManager;
+import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
 import github.tyonakaisan.sukesuke.util.ProtocolUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -23,7 +23,7 @@ import java.util.List;
 public class OthersPacketListener {
     private final Sukesuke plugin;
 
-    public OthersPacketListener(Sukesuke plugin, ProtocolManager protocolManager, ArmorManager armorManager) {
+    public OthersPacketListener(Sukesuke plugin, ProtocolManager protocolManager, ArmorPacketManager armorPacketManager) {
         this.plugin = plugin;
         protocolManager.addPacketListener(new PacketAdapter(plugin, PacketType.Play.Server.ENTITY_EQUIPMENT) {
             @Override
@@ -62,7 +62,7 @@ public class OthersPacketListener {
                     }
                     //エリトラ
                     else if (slotPair.getSecond().getType().equals(Material.ELYTRA) && livPlayer.isGliding()) {
-                        slotPair.setSecond(armorManager.HideArmor(slotPair.getSecond().clone(), livPlayer));
+                        slotPair.setSecond(armorPacketManager.HideArmor(slotPair.getSecond().clone(), livPlayer));
                     }
                     //透明
                     else {

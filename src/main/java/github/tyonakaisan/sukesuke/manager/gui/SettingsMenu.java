@@ -3,7 +3,7 @@ package github.tyonakaisan.sukesuke.manager.gui;
 import broccolai.corn.paper.item.PaperItemBuilder;
 import com.comphenix.protocol.ProtocolManager;
 import github.tyonakaisan.sukesuke.Sukesuke;
-import github.tyonakaisan.sukesuke.manager.ArmorManager;
+import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
 import github.tyonakaisan.sukesuke.player.PlayerSetKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -27,31 +27,36 @@ import java.util.Objects;
 public class SettingsMenu extends AbstractMenu {
     private final Sukesuke plugin;
     private final ProtocolManager protocolManager;
-    private final ArmorManager armorManager;
+    private final ArmorPacketManager armorPacketManager;
 
-    public SettingsMenu(Sukesuke pl, ProtocolManager pm, ArmorManager am) {
+    public SettingsMenu(Sukesuke pl, ProtocolManager pm, ArmorPacketManager am) {
         this.plugin = pl;
         this.protocolManager = pm;
-        this.armorManager = am;
+        this.armorPacketManager = am;
     }
 
-    private static final ItemStack help = PaperItemBuilder.ofType(Material.WRITABLE_BOOK)
+    private static final ItemStack help = PaperItemBuilder.ofType(Material.LIGHT)
             .name(Component.text()
-                    .append(Component.text("ヘルプ"))
+                    .append(Component.text("使い方"))
                     .decoration(TextDecoration.BOLD, true)
                     .decoration(TextDecoration.ITALIC, false)
                     .color(TextColor.fromCSSHexString("#00fa9a"))
                     .build())
             .lore(List.of(Component.text()
-                    .append(Component.text("この機能の使い方"))
+                    .append(Component.text("装備ごとに表示か非表示を選べます"))
                     .decoration(TextDecoration.ITALIC, false)
                     .color(NamedTextColor.GRAY)
                     .build(),
                     Component.text().build(),
                     Component.text()
-                            .append(Component.text("クリックして確認する！"))
+                            .append(Component.text("/suke toggle で表示/非表示の切り替えができます"))
                             .decoration(TextDecoration.ITALIC, false)
-                            .color(TextColor.fromCSSHexString("#ffd700"))
+                            .color(NamedTextColor.GRAY)
+                            .build(),
+                    Component.text()
+                            .append(Component.text("表示がおかしくなった場合は/suke suke で直せます"))
+                            .decoration(TextDecoration.ITALIC, false)
+                            .color(NamedTextColor.GRAY)
                             .build()))
             .build();
 
@@ -197,24 +202,13 @@ public class SettingsMenu extends AbstractMenu {
                 .addTransform(chest())
                 .addTransform(leggings())
                 .addTransform(boots())
-                //.addTransform(chestItem(ItemStackElement.of(self_toggle), 6, 0))
-                //.addTransform(chestItem(ItemStackElement.of(others_toggle), 7, 0))
                 //2段目
+                //toggleボタン実装したけどなぜか自分の見た目だけ変わらなかったのでコマンドで代用
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("helmet", view.viewer().player()), context -> new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "helmet")), 1, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("chest", view.viewer().player()), context -> new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "chest")), 2, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("leggings", view.viewer().player()), context -> new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "leggings")), 3, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("boots", view.viewer().player()), context -> new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "boots")), 4, 1))
                 .addTransform(chestItem(ItemStackElement.of(help), 6, 1))
-                //.addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("self_toggle", view.viewer().player()), context -> {
-                    //Player player = view.viewer().player();
-                    //new PlayerSetKey(plugin).setToggleArmorType(player, "self_toggle");
-                    //なぜか自分視点の装備だけ切り替えることができない
-                    //他プレイヤー視点だと変わっている
-                    //toggleコマンドで代用
-                    //armorManager.sendPacket(player);
-                    //player.performCommand("suke toggle");
-                //}), 6, 1))
-                //.addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("others_toggle", view.viewer().player()), context -> new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "others_toggle")), 7, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(close, context -> context.viewer().close()), 8, 1))
         .build();
     }

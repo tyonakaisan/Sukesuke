@@ -14,7 +14,7 @@ public class PlayerSetKey {
         this.plugin = pl;
     }
 
-    public void setHideArmorType(Player player) {
+    public void setHideArmorKey(Player player) {
         if (!player.getPersistentDataContainer().has(new NamespacedKey(plugin, "helmet"))) {
             player.getPersistentDataContainer().set(new NamespacedKey(plugin, "helmet"), PersistentDataType.STRING, "false");
         }

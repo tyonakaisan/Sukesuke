@@ -43,7 +43,7 @@ public class ProtocolUtils {
 
         public static ArmorType getType(int value){
             for(int i = 0; i < values().length; i++){
-                if(values()[i].getValue() == value) return values()[i];
+                if (values()[i].getValue() == value) return values()[i];
             }
             return null;
         }

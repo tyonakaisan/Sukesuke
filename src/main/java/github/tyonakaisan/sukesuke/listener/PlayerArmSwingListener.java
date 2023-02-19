@@ -21,7 +21,7 @@ public class PlayerArmSwingListener implements Listener {
     public void onArmSwing(PlayerArmSwingEvent event) {
         Player player = event.getPlayer();
 
-        if (event.getHand() == EquipmentSlot.HAND) {
+        if (event.getHand() == EquipmentSlot.HAND && player.getTargetEntity(4, false) != null) {
             armorPacketManager.sendPacket(player);
         }
     }

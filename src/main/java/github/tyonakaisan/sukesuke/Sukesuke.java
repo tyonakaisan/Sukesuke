@@ -3,10 +3,7 @@ package github.tyonakaisan.sukesuke;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import github.tyonakaisan.sukesuke.commands.PlayerCommands;
-import github.tyonakaisan.sukesuke.listener.ArmorChangeListener;
-import github.tyonakaisan.sukesuke.listener.ElytraListener;
-import github.tyonakaisan.sukesuke.listener.GameModeChangeListener;
-import github.tyonakaisan.sukesuke.listener.PlayerArmSwingListener;
+import github.tyonakaisan.sukesuke.listener.*;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
 import github.tyonakaisan.sukesuke.packet.OthersPacketListener;
 import github.tyonakaisan.sukesuke.packet.SelfPacketListener;
@@ -27,7 +24,7 @@ private static Sukesuke plugin;
         ArmorPacketManager armorPacketManager = new ArmorPacketManager(this, protocolManager);
 
         //command
-        getCommand("suke").setExecutor(new PlayerCommands(this, protocolManager, armorPacketManager));
+        getCommand("suke").setExecutor(new PlayerCommands(this, armorPacketManager));
 
         //packet
         new SelfPacketListener(this, protocolManager, armorPacketManager);
@@ -38,6 +35,7 @@ private static Sukesuke plugin;
         getServer().getPluginManager().registerEvents(new ArmorChangeListener(this, armorPacketManager), this);
         getServer().getPluginManager().registerEvents(new GameModeChangeListener(this, armorPacketManager), this);
         getServer().getPluginManager().registerEvents(new PlayerArmSwingListener(this, armorPacketManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
     }
 
     @Override

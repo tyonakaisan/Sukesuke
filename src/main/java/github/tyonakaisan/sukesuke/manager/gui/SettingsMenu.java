@@ -1,9 +1,7 @@
 package github.tyonakaisan.sukesuke.manager.gui;
 
 import broccolai.corn.paper.item.PaperItemBuilder;
-import com.comphenix.protocol.ProtocolManager;
 import github.tyonakaisan.sukesuke.Sukesuke;
-import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
 import github.tyonakaisan.sukesuke.player.PlayerSetKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,13 +24,9 @@ import java.util.Objects;
 
 public class SettingsMenu extends AbstractMenu {
     private final Sukesuke plugin;
-    private final ProtocolManager protocolManager;
-    private final ArmorPacketManager armorPacketManager;
 
-    public SettingsMenu(Sukesuke pl, ProtocolManager pm, ArmorPacketManager am) {
+    public SettingsMenu(Sukesuke pl) {
         this.plugin = pl;
-        this.protocolManager = pm;
-        this.armorPacketManager = am;
     }
 
     private static final ItemStack help = PaperItemBuilder.ofType(Material.LIGHT)
@@ -49,12 +43,17 @@ public class SettingsMenu extends AbstractMenu {
                     .build(),
                     Component.text().build(),
                     Component.text()
-                            .append(Component.text("/suke toggle で表示/非表示の切り替えができます"))
+                            .append(Component.text("/suke で表示/非表示の切り替えができます"))
                             .decoration(TextDecoration.ITALIC, false)
                             .color(NamedTextColor.GRAY)
                             .build(),
                     Component.text()
-                            .append(Component.text("表示がおかしくなった場合は/suke suke で直せます"))
+                            .append(Component.text("表示がおかしくなった場合は/suke suke もしくは"))
+                            .decoration(TextDecoration.ITALIC, false)
+                            .color(NamedTextColor.GRAY)
+                            .build(),
+                    Component.text()
+                            .append(Component.text("もう一度装備を着直したら治ります"))
                             .decoration(TextDecoration.ITALIC, false)
                             .color(NamedTextColor.GRAY)
                             .build()))
@@ -129,26 +128,6 @@ public class SettingsMenu extends AbstractMenu {
                         .decoration(TextDecoration.ITALIC, false)
                         .color(NamedTextColor.WHITE)
                         .build()))
-            .build();
-
-    private static final ItemStack others_toggle = PaperItemBuilder.ofType(Material.PLAYER_HEAD)
-            .name(Component.text()
-                    .append(Component.text("他プレイヤーの装備の表示/非表示"))
-                    .decoration(TextDecoration.BOLD, true)
-                    .decoration(TextDecoration.ITALIC, false)
-                    .color(TextColor.fromCSSHexString("#00fa9a"))
-                    .build())
-            .lore(List.of(
-                    Component.text()
-                            .append(Component.text("装備を表示/非表示にします!"))
-                            .decoration(TextDecoration.ITALIC, false)
-                            .color(NamedTextColor.WHITE)
-                            .build(),
-                    Component.text()
-                            .append(Component.text("準備中..."))
-                            .decoration(TextDecoration.ITALIC, false)
-                            .color(NamedTextColor.GRAY)
-                            .build()))
             .build();
 
     private static final ItemStack toggleInVisible = PaperItemBuilder.ofType(Material.GRAY_DYE)

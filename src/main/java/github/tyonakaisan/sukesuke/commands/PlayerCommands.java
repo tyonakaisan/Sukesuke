@@ -1,15 +1,19 @@
 package github.tyonakaisan.sukesuke.commands;
 
-import com.comphenix.protocol.ProtocolManager;
 import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
 import github.tyonakaisan.sukesuke.manager.gui.SettingsMenu;
 import github.tyonakaisan.sukesuke.player.PlayerSetKey;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.StringUtil;
 import org.incendo.interfaces.paper.PlayerViewer;
 import org.jetbrains.annotations.NotNull;
@@ -22,11 +26,9 @@ public class PlayerCommands implements CommandExecutor, TabCompleter {
 
     private final Sukesuke plugin;
     private final ArmorPacketManager armorPacketManager;
-    private final ProtocolManager protocolManager;
 
-    public PlayerCommands(Sukesuke pl,ProtocolManager pm, ArmorPacketManager am) {
+    public PlayerCommands(Sukesuke pl, ArmorPacketManager am) {
         this.plugin = pl;
-        this.protocolManager = pm;
         this.armorPacketManager = am;
     }
 
@@ -37,25 +39,29 @@ public class PlayerCommands implements CommandExecutor, TabCompleter {
             player = (Player) sender;
             if (args.length == 1) {
                 switch (args[0]) {
-                    case "toggle" -> {
-                        new PlayerSetKey(plugin).setToggleArmorType(player, "self_toggle");
-                        armorPacketManager.sendPacket(player);
-                        return true;
-                    }
                     case "suke" -> {
                         armorPacketManager.sendPacket(player);
                         return true;
                     }
                     case "gui" -> {
-                        new PlayerSetKey(plugin).setHideArmorKey(player);
-                        new SettingsMenu(plugin, protocolManager, armorPacketManager).buildInterface().open(PlayerViewer.of(player));
+                        new SettingsMenu(plugin).buildInterface().open(PlayerViewer.of(player));
                         return true;
                     }
                 }
             }
+            new PlayerSetKey(plugin).setToggleArmorType(player, "self_toggle");
+            armorPacketManager.sendPacket(player);
+            //actionbar
+            String toggle = player.getPersistentDataContainer().get(new NamespacedKey(plugin, "self_toggle"), PersistentDataType.STRING);
 
-            new PlayerSetKey(plugin).setHideArmorKey(player);
-            new SettingsMenu(plugin, protocolManager, armorPacketManager).buildInterface().open(PlayerViewer.of(player));
+            Component actionBar = Component.text()
+                    .append(Component.text("すけすけモード: ")
+                            .decoration(TextDecoration.BOLD, true)
+                            .decoration(TextDecoration.ITALIC, false)
+                            .color(TextColor.fromCSSHexString("#00fa9a")))
+                    .append(Component.text(toggle))
+                    .build();
+            player.sendActionBar(actionBar);
             return true;
         }
         return false;
@@ -69,7 +75,6 @@ public class PlayerCommands implements CommandExecutor, TabCompleter {
                 commands.add("suke");
             }
             else if (args.length == 1) {
-                commands.add("toggle");
                 commands.add("suke");
                 commands.add("gui");
                 return SortedCommands(args[0], commands);

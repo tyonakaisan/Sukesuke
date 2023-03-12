@@ -5,33 +5,23 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
-import com.google.common.collect.Multimap;
 import github.tyonakaisan.sukesuke.Sukesuke;
-import github.tyonakaisan.sukesuke.util.ProtocolUtils;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.Map;
 
 public class ArmorPacketManager {
     private final Sukesuke plugin;
+    private final ArmorManager armorManager;
     private final ProtocolManager protocolManager;
 
-    public ArmorPacketManager(Sukesuke pl, ProtocolManager pm) {
+    public ArmorPacketManager(Sukesuke pl, ArmorManager am, ProtocolManager pm) {
         this.plugin = pl;
+        this.armorManager = am;
         this.protocolManager = pm;
     }
 
@@ -41,14 +31,14 @@ public class ArmorPacketManager {
     }
 
     public void SelfPacket(Player player) {
-        PlayerInventory inv = player.getInventory();
+        PlayerInventory inventory = player.getInventory();
 
         for (int i = 5; i <= 8; i++) {
             PacketContainer packetSelf = protocolManager.createPacket(PacketType.Play.Server.SET_SLOT);
             packetSelf.getIntegers().write(0, 0);
             packetSelf.getIntegers().write(2, i);
 
-            ItemStack armor = ProtocolUtils.getArmor(ProtocolUtils.ArmorType.getType(i), inv);
+            ItemStack armor = armorManager.getArmor(i, inventory);
             packetSelf.getItemModifier().write(0, armor);
 
             try {
@@ -66,117 +56,26 @@ public class ArmorPacketManager {
         packetOthers.getIntegers().write(0, player.getEntityId());
 
         List<Pair<EnumWrappers.ItemSlot, ItemStack>> pairList = packetOthers.getSlotStackPairLists().read(0);
-        pairList.add(new Pair<>(EnumWrappers.ItemSlot.HEAD, ProtocolUtils.getArmor(ProtocolUtils.ArmorType.HELMET, inv)));
-        pairList.add(new Pair<>(EnumWrappers.ItemSlot.CHEST, ProtocolUtils.getArmor(ProtocolUtils.ArmorType.CHEST, inv)));
-        pairList.add(new Pair<>(EnumWrappers.ItemSlot.LEGS, ProtocolUtils.getArmor(ProtocolUtils.ArmorType.LEGGS, inv)));
-        pairList.add(new Pair<>(EnumWrappers.ItemSlot.FEET, ProtocolUtils.getArmor(ProtocolUtils.ArmorType.BOOTS, inv)));
+        pairList.add(new Pair<>(EnumWrappers.ItemSlot.HEAD, armorManager.getArmor(5, inv)));
+        pairList.add(new Pair<>(EnumWrappers.ItemSlot.CHEST, armorManager.getArmor(6, inv)));
+        pairList.add(new Pair<>(EnumWrappers.ItemSlot.LEGS, armorManager.getArmor(7, inv)));
+        pairList.add(new Pair<>(EnumWrappers.ItemSlot.FEET, armorManager.getArmor(8, inv)));
         pairList.add(new Pair<>(EnumWrappers.ItemSlot.MAINHAND, player.getInventory().getItemInMainHand().clone()));
         pairList.add(new Pair<>(EnumWrappers.ItemSlot.OFFHAND, player.getInventory().getItemInOffHand().clone()));
 
         packetOthers.getSlotStackPairLists().write(0, pairList);
-        ProtocolUtils.broadcastPlayerPacket(protocolManager, packetOthers, player);
+        broadcastPlayerPacket(protocolManager, packetOthers, player);
     }
 
-    public ItemStack HideArmor(ItemStack itemStack, Player player) {
-        if (itemStack.getType().equals(Material.AIR)) return itemStack;
-
-
-        //meta
-        ItemMeta itemMeta = itemStack.getItemMeta().clone();
-
-        //説明ぶん
-        itemMeta.lore(List.of(Component.text().build(),
-                getItemDurability(itemStack),
-                Component.text()
-                        .append(Component.text("非表示中!"))
-                        .decoration(TextDecoration.BOLD, true)
-                        .decoration(TextDecoration.ITALIC, false)
-                        .color(TextColor.color(NamedTextColor.GRAY))
-                        .build()));
-
-        //アイテム名
-        itemMeta.displayName(Component.text()
-                .append(Component.text("すけすけ"))
-                .decoration(TextDecoration.BOLD, true)
-                .decoration(TextDecoration.ITALIC, false)
-                .color(TextColor.fromCSSHexString("#00fa9a"))
-                .build());
-
-        // ArmoredElytra mod compatibility
-        if (itemStack.getType().equals(Material.ELYTRA)) {
-            itemMeta = hideElytra(itemStack);
+    private static void broadcastPlayerPacket(ProtocolManager manager, PacketContainer packet, Player player) {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            if (p.getWorld().equals(player.getWorld()) && !p.equals(player)) {
+                try {
+                    manager.sendServerPacket(p, packet);
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        else {
-            // Changing armor material and name to its placeholder's, if it has one
-            itemStack.setType(Material.STONE_BUTTON);
-        }
-
-        // Applying item meta and lore
-        itemStack.setItemMeta(itemMeta);
-
-        return itemStack;
-    }
-
-    /*
-    // PaperItemBuilder だと装備を切り替えた時に他の部位の装備も元に戻ってしまう(?)
-    //
-    public ItemStack HideArmor_v2(ItemStack itemStack) {
-        if (itemStack.getType().equals(Material.AIR)) {
-            return itemStack;
-        }
-        //meta copy
-        ItemMeta meta = itemStack.getItemMeta().clone();
-
-        ItemStack hide = PaperItemBuilder.ofType(Material.STONE_BUTTON)
-                .name(Component.text()
-                    .append(itemStack.displayName())
-                    .build())
-                .build();
-
-        hide.setItemMeta(meta);
-
-        return hide;
-    }
-     */
-
-    public ItemMeta hideElytra(ItemStack itemStack){
-        ItemMeta itemMeta = itemStack.getItemMeta();
-
-        // Storing the elytra current enchantments, attributes and damage
-        Map<Enchantment, Integer> encs = itemMeta.getEnchants();
-        Multimap<Attribute, AttributeModifier> attrs = itemMeta.getAttributeModifiers();
-        int damage = ((org.bukkit.inventory.meta.Damageable) itemMeta).getDamage();
-
-        itemStack = new ItemStack(Material.ELYTRA);
-
-        // Getting item meta from the new elytra
-        itemMeta = itemStack.getItemMeta();
-
-        // Applying stored enchantments to the new elytra
-        for(Enchantment key : encs.keySet()){
-            itemMeta.addEnchant(key, encs.get(key), true);
-        }
-
-        // Applying stored attributes to the new elytra
-        itemMeta.setAttributeModifiers(attrs);
-
-        // Applying stored damage to the new elytra
-        ((org.bukkit.inventory.meta.Damageable) itemMeta).setDamage(damage);
-
-        return itemMeta;
-    }
-
-    private Component getItemDurability(ItemStack itemStack){
-        Damageable dmeta = (Damageable) itemStack.getItemMeta();
-        int Damage = itemStack.getType().getMaxDurability();
-        int mDamage = Damage - dmeta.getDamage();
-        return Component.text()
-                .append(Component.text("耐久値 : "))
-                .append(Component.text(mDamage))
-                .append(Component.text("/"))
-                .append(Component.text(Damage))
-                .decoration(TextDecoration.ITALIC, false)
-                .color(TextColor.color(NamedTextColor.WHITE))
-                .build();
     }
 }

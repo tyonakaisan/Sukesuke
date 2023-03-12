@@ -3,7 +3,7 @@ package github.tyonakaisan.sukesuke.commands;
 import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
 import github.tyonakaisan.sukesuke.manager.gui.SettingsMenu;
-import github.tyonakaisan.sukesuke.player.PlayerSetKey;
+import github.tyonakaisan.sukesuke.manager.PlayerKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -35,34 +35,35 @@ public class PlayerCommands implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender instanceof Player) {
-            Player player;
-            player = (Player) sender;
-            if (args.length == 1) {
-                switch (args[0]) {
-                    case "suke" -> {
-                        armorPacketManager.sendPacket(player);
-                        return true;
-                    }
-                    case "gui" -> {
-                        new SettingsMenu(plugin).buildInterface().open(PlayerViewer.of(player));
-                        return true;
+            Player player = (Player) sender;
+            if (player.hasPermission("sukesuke.suke")) {
+                if (args.length == 1) {
+                    switch (args[0]) {
+                        case "suke" -> {
+                            armorPacketManager.sendPacket(player);
+                            return true;
+                        }
+                        case "gui" -> {
+                            new SettingsMenu(plugin).buildInterface().open(PlayerViewer.of(player));
+                            return true;
+                        }
                     }
                 }
-            }
-            new PlayerSetKey(plugin).setToggleArmorType(player, "self_toggle");
-            armorPacketManager.sendPacket(player);
-            //actionbar
-            String toggle = player.getPersistentDataContainer().get(new NamespacedKey(plugin, "self_toggle"), PersistentDataType.STRING);
+                new PlayerKey(plugin).setToggleArmorType(player, "self_toggle");
+                armorPacketManager.sendPacket(player);
+                //actionbar
+                String toggle = player.getPersistentDataContainer().get(new NamespacedKey(plugin, "self_toggle"), PersistentDataType.STRING);
 
-            Component actionBar = Component.text()
-                    .append(Component.text("すけすけモード: ")
-                            .decoration(TextDecoration.BOLD, true)
-                            .decoration(TextDecoration.ITALIC, false)
-                            .color(TextColor.fromCSSHexString("#00fa9a")))
-                    .append(Component.text(toggle))
-                    .build();
-            player.sendActionBar(actionBar);
-            return true;
+                Component actionBar = Component.text()
+                        .append(Component.text("すけすけモード: ")
+                                .decoration(TextDecoration.BOLD, true)
+                                .decoration(TextDecoration.ITALIC, false)
+                                .color(TextColor.fromCSSHexString("#00fa9a")))
+                        .append(Component.text(toggle))
+                        .build();
+                player.sendActionBar(actionBar);
+                return true;
+            }
         }
         return false;
     }

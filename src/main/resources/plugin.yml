@@ -8,3 +8,8 @@ commands:
   suke:
     usage: /<command>
     description: こまんど
+
+permissions:
+  sukesuke.suke:
+    default: true
+    description: Sukesukeします

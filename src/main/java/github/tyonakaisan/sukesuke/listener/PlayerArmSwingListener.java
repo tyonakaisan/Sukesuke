@@ -8,11 +8,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.EquipmentSlot;
 
+//無敵のmob等に攻撃した際に防具の透明化が解除されてしまう対策
+//パケットでやろうとしたけど上手く動作しなかったから代用
+
 public class PlayerArmSwingListener implements Listener {
     Sukesuke plugin;
     ArmorPacketManager armorPacketManager;
 
-    public PlayerArmSwingListener(Sukesuke pl, ArmorPacketManager am){
+    public PlayerArmSwingListener(Sukesuke pl, ArmorPacketManager am) {
         this.plugin = pl;
         this.armorPacketManager = am;
     }

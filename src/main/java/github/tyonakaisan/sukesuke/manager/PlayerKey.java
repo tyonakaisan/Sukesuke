@@ -1,4 +1,4 @@
-package github.tyonakaisan.sukesuke.player;
+package github.tyonakaisan.sukesuke.manager;
 
 import github.tyonakaisan.sukesuke.Sukesuke;
 import org.bukkit.NamespacedKey;
@@ -7,10 +7,10 @@ import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
-public class PlayerSetKey {
+public class PlayerKey {
     private final Sukesuke plugin;
 
-    public PlayerSetKey(Sukesuke pl) {
+    public PlayerKey(Sukesuke pl) {
         this.plugin = pl;
     }
 

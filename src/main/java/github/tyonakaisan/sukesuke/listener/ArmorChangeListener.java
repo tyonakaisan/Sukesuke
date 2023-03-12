@@ -7,8 +7,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 
 public class ArmorChangeListener implements Listener {
@@ -23,15 +23,22 @@ public class ArmorChangeListener implements Listener {
     @EventHandler
     public void onPlayerArmorChange(PlayerArmorChangeEvent event) {
         Player player = event.getPlayer();
-        PlayerInventory inventory = player.getInventory();
-        if (!player.getPersistentDataContainer().get(new NamespacedKey(plugin, "self_toggle"), PersistentDataType.STRING).equalsIgnoreCase("true")) {
-            return;
-        }
         ItemStack new_armor = event.getNewItem();
 
-        if (new_armor == null) {
-            return;
-        }
+        if (player.getPersistentDataContainer().get(new NamespacedKey(plugin, "self_toggle"), PersistentDataType.STRING).equalsIgnoreCase("false")) return;
+        if (new_armor == null) return;
+
+        armorPacketManager.sendPacket(player);
+    }
+
+    //エリトラ飛行中
+    @EventHandler
+    public void onPlayerToggleGlide(EntityToggleGlideEvent event){
+        if(!(event.getEntity() instanceof Player)) return;
+        Player player = (Player) event.getEntity();
+
+        if(player.getPersistentDataContainer().get(new NamespacedKey(plugin, "self_toggle"), PersistentDataType.STRING).equalsIgnoreCase("false")) return;
+
         armorPacketManager.sendPacket(player);
     }
 }

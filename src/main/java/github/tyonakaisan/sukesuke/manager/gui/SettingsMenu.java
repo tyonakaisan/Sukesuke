@@ -2,7 +2,7 @@ package github.tyonakaisan.sukesuke.manager.gui;
 
 import broccolai.corn.paper.item.PaperItemBuilder;
 import github.tyonakaisan.sukesuke.Sukesuke;
-import github.tyonakaisan.sukesuke.player.PlayerSetKey;
+import github.tyonakaisan.sukesuke.manager.PlayerKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -54,6 +54,37 @@ public class SettingsMenu extends AbstractMenu {
                             .build(),
                     Component.text()
                             .append(Component.text("もう一度装備を着直したら治ります"))
+                            .decoration(TextDecoration.ITALIC, false)
+                            .color(NamedTextColor.GRAY)
+                            .build()))
+            .build();
+
+    private static final ItemStack bug = PaperItemBuilder.ofType(Material.PUFFERFISH_BUCKET)
+            .name(Component.text()
+                    .append(Component.text("既知のバグ等"))
+                    .decoration(TextDecoration.BOLD, true)
+                    .decoration(TextDecoration.ITALIC, false)
+                    .color(TextColor.fromCSSHexString("#00fa9a"))
+                    .build())
+            .lore(List.of(
+                    Component.text()
+                            .append(Component.text("・皮の装備を着た場合に"))
+                            .decoration(TextDecoration.ITALIC, false)
+                            .color(TextColor.fromCSSHexString("#dc143c"))
+                            .build(),
+                    Component.text()
+                            .append(Component.text("  ボタンのアイテム名、説明分が変わらない"))
+                            .decoration(TextDecoration.ITALIC, false)
+                            .color(TextColor.fromCSSHexString("#dc143c"))
+                            .build(),
+                    Component.text().build(),
+                    Component.text()
+                            .append(Component.text("・皮のブーツを着ても粉雪の上を歩けない"))
+                            .decoration(TextDecoration.ITALIC, false)
+                            .color(TextColor.fromCSSHexString("#dc143c"))
+                            .build(),
+                    Component.text()
+                            .append(Component.text("  ↳ 足の部位を表示する設定にしたら治ります"))
                             .decoration(TextDecoration.ITALIC, false)
                             .color(NamedTextColor.GRAY)
                             .build()))
@@ -182,12 +213,13 @@ public class SettingsMenu extends AbstractMenu {
                 .addTransform(leggings())
                 .addTransform(boots())
                 //2段目
-                //toggleボタン実装したけどなぜか自分の見た目だけ変わらなかったのでコマンドで代用
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("helmet", view.viewer().player()), context -> new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "helmet")), 1, 1))
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("chest", view.viewer().player()), context -> new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "chest")), 2, 1))
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("leggings", view.viewer().player()), context -> new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "leggings")), 3, 1))
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("boots", view.viewer().player()), context -> new PlayerSetKey(plugin).setToggleArmorType(view.viewer().player(), "boots")), 4, 1))
+                //toggle実装したけどなぜか自分の見た目だけ変わらなかったのでコマンドで代用
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("helmet", view.viewer().player()), context -> new PlayerKey(plugin).setToggleArmorType(view.viewer().player(), "helmet")), 1, 1))
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("chest", view.viewer().player()), context -> new PlayerKey(plugin).setToggleArmorType(view.viewer().player(), "chest")), 2, 1))
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("leggings", view.viewer().player()), context -> new PlayerKey(plugin).setToggleArmorType(view.viewer().player(), "leggings")), 3, 1))
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("boots", view.viewer().player()), context -> new PlayerKey(plugin).setToggleArmorType(view.viewer().player(), "boots")), 4, 1))
                 .addTransform(chestItem(ItemStackElement.of(help), 6, 1))
+                .addTransform(chestItem(ItemStackElement.of(bug), 7, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(close, context -> context.viewer().close()), 8, 1))
         .build();
     }

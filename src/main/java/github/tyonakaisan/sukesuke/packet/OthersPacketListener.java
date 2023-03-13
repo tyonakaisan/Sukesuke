@@ -34,9 +34,8 @@ public class OthersPacketListener {
 
                 //パーミッションチェック
                 if (livPlayer.hasPermission("sukesuke.suke")) {
-                    //self_toggle = falseであれば or Creativeモード であれば返す
                     var pdc = livPlayer.getPersistentDataContainer();
-
+                    //self_toggle = falseであれば or Creativeモード であれば返す
                     if (pdc.get(Keys.ToggleKey, PersistentDataType.STRING).equalsIgnoreCase("false")
                             || livPlayer.getGameMode().equals(GameMode.CREATIVE)) {
                         return;

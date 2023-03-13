@@ -20,8 +20,10 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-
-        Keys.setHideArmorKey(player);
+        //toggleKeyチェック
+        if (!player.getPersistentDataContainer().has(Keys.ToggleKey)) {
+            Keys.setHideArmorKey(player);
+        }
 
         if (player.hasPermission("sukesuke.suke")) {
             armorPacketManager.sendPacket(player);

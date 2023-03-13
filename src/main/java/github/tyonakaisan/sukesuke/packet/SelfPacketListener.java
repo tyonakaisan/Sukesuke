@@ -30,9 +30,8 @@ public class SelfPacketListener {
                 Player player = event.getPlayer();
                 //パーミッションチェック
                 if (player.hasPermission("sukesuke.suke")) {
-                    //self_toggle = falseであれば or Creativeモード であれば返す
                     var pdc = player.getPersistentDataContainer();
-
+                    //self_toggle = falseであれば or Creativeモード であれば返す
                     if (pdc.get(Keys.ToggleKey, PersistentDataType.STRING).equalsIgnoreCase("false")
                             || player.getGameMode().equals(GameMode.CREATIVE)) return;
 

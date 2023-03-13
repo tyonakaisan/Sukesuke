@@ -32,7 +32,6 @@ public class GameModeChangeListener implements Listener {
             new BukkitRunnable(){
                 @Override
                 public void run() {
-                    //new SetKey(plugin).setToggleArmorType(player, "toggle");
                     Keys.setToggleArmorType(player, "toggle");
                     armorPacketManager.sendPacket(player);
                 }

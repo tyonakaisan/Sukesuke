@@ -9,9 +9,9 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
 import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorManager;
+import github.tyonakaisan.sukesuke.manager.Keys;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -35,7 +35,9 @@ public class OthersPacketListener {
                 //パーミッションチェック
                 if (livPlayer.hasPermission("sukesuke.suke")) {
                     //self_toggle = falseであれば or Creativeモード であれば返す
-                    if (livPlayer.getPersistentDataContainer().get(new NamespacedKey(plugin, "self_toggle"), PersistentDataType.STRING).equalsIgnoreCase("false")
+                    var pdc = livPlayer.getPersistentDataContainer();
+
+                    if (pdc.get(Keys.ToggleKey, PersistentDataType.STRING).equalsIgnoreCase("false")
                             || livPlayer.getGameMode().equals(GameMode.CREATIVE)) {
                         return;
                     }
@@ -44,19 +46,19 @@ public class OthersPacketListener {
 
                     pairList.stream().filter(OthersPacketListener::isArmorSlot).forEach(slotPair -> {
                         //ヘルメット
-                        if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.HEAD) && livPlayer.getPersistentDataContainer().get(new NamespacedKey(plugin, "helmet"), PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                        if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.HEAD) && pdc.get(Keys.HelmetKey, PersistentDataType.STRING).equalsIgnoreCase("false")) {
                             slotPair.setSecond(slotPair.getSecond().clone());
                         }
                         //チェスト
-                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.CHEST) && livPlayer.getPersistentDataContainer().get(new NamespacedKey(plugin, "chest"), PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.CHEST) && pdc.get(Keys.ChestKey, PersistentDataType.STRING).equalsIgnoreCase("false")) {
                             slotPair.setSecond(slotPair.getSecond().clone());
                         }
                         //レギンス
-                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.LEGS) && livPlayer.getPersistentDataContainer().get(new NamespacedKey(plugin, "leggings"), PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.LEGS) && pdc.get(Keys.LeggingsKey, PersistentDataType.STRING).equalsIgnoreCase("false")) {
                             slotPair.setSecond(slotPair.getSecond().clone());
                         }
                         //ブーツ
-                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.FEET) && livPlayer.getPersistentDataContainer().get(new NamespacedKey(plugin, "boots"), PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.FEET) && pdc.get(Keys.BootsKey, PersistentDataType.STRING).equalsIgnoreCase("false")) {
                             slotPair.setSecond(slotPair.getSecond().clone());
                         }
                         //エリトラ

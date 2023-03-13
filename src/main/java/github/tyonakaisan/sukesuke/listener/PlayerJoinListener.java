@@ -2,7 +2,7 @@ package github.tyonakaisan.sukesuke.listener;
 
 import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
-import github.tyonakaisan.sukesuke.manager.PlayerKey;
+import github.tyonakaisan.sukesuke.manager.Keys;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,7 +21,7 @@ public class PlayerJoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        new PlayerKey(plugin).setHideArmorKey(player);
+        Keys.setHideArmorKey(player);
 
         if (player.hasPermission("sukesuke.suke")) {
             armorPacketManager.sendPacket(player);

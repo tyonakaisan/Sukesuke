@@ -3,7 +3,7 @@ package github.tyonakaisan.sukesuke.listener;
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
-import org.bukkit.NamespacedKey;
+import github.tyonakaisan.sukesuke.manager.Keys;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,7 +25,7 @@ public class ArmorChangeListener implements Listener {
         Player player = event.getPlayer();
         ItemStack new_armor = event.getNewItem();
 
-        if (player.getPersistentDataContainer().get(new NamespacedKey(plugin, "self_toggle"), PersistentDataType.STRING).equalsIgnoreCase("false")) return;
+        if (player.getPersistentDataContainer().get(Keys.ToggleKey, PersistentDataType.STRING).equalsIgnoreCase("false")) return;
         if (new_armor == null) return;
 
         armorPacketManager.sendPacket(player);
@@ -37,7 +37,7 @@ public class ArmorChangeListener implements Listener {
         if(!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
 
-        if(player.getPersistentDataContainer().get(new NamespacedKey(plugin, "self_toggle"), PersistentDataType.STRING).equalsIgnoreCase("false")) return;
+        if (player.getPersistentDataContainer().get(Keys.ToggleKey, PersistentDataType.STRING).equalsIgnoreCase("false")) return;
 
         armorPacketManager.sendPacket(player);
     }

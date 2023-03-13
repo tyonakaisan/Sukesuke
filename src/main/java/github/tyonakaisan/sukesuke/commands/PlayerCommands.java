@@ -2,12 +2,11 @@ package github.tyonakaisan.sukesuke.commands;
 
 import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
+import github.tyonakaisan.sukesuke.manager.Keys;
 import github.tyonakaisan.sukesuke.manager.gui.SettingsMenu;
-import github.tyonakaisan.sukesuke.manager.PlayerKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -21,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class PlayerCommands implements CommandExecutor, TabCompleter {
 
@@ -49,17 +49,17 @@ public class PlayerCommands implements CommandExecutor, TabCompleter {
                         }
                     }
                 }
-                new PlayerKey(plugin).setToggleArmorType(player, "self_toggle");
+                Keys.setToggleArmorType(player, "toggle");
                 armorPacketManager.sendPacket(player);
                 //actionbar
-                String toggle = player.getPersistentDataContainer().get(new NamespacedKey(plugin, "self_toggle"), PersistentDataType.STRING);
+                String toggle = player.getPersistentDataContainer().get(Keys.ToggleKey, PersistentDataType.STRING);
 
                 Component actionBar = Component.text()
                         .append(Component.text("すけすけモード: ")
                                 .decoration(TextDecoration.BOLD, true)
                                 .decoration(TextDecoration.ITALIC, false)
                                 .color(TextColor.fromCSSHexString("#00fa9a")))
-                        .append(Component.text(toggle))
+                        .append(Component.text(Objects.requireNonNull(toggle)))
                         .build();
                 player.sendActionBar(actionBar);
                 return true;

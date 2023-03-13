@@ -2,7 +2,7 @@ package github.tyonakaisan.sukesuke.manager.gui;
 
 import broccolai.corn.paper.item.PaperItemBuilder;
 import github.tyonakaisan.sukesuke.Sukesuke;
-import github.tyonakaisan.sukesuke.manager.PlayerKey;
+import github.tyonakaisan.sukesuke.manager.Keys;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -214,10 +214,10 @@ public class SettingsMenu extends AbstractMenu {
                 .addTransform(boots())
                 //2段目
                 //toggle実装したけどなぜか自分の見た目だけ変わらなかったのでコマンドで代用
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("helmet", view.viewer().player()), context -> new PlayerKey(plugin).setToggleArmorType(view.viewer().player(), "helmet")), 1, 1))
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("chest", view.viewer().player()), context -> new PlayerKey(plugin).setToggleArmorType(view.viewer().player(), "chest")), 2, 1))
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("leggings", view.viewer().player()), context -> new PlayerKey(plugin).setToggleArmorType(view.viewer().player(), "leggings")), 3, 1))
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("boots", view.viewer().player()), context -> new PlayerKey(plugin).setToggleArmorType(view.viewer().player(), "boots")), 4, 1))
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("helmet", view.viewer().player()), context -> Keys.setToggleArmorType(view.viewer().player(), "helmet")), 1, 1))
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("chest", view.viewer().player()), context -> Keys.setToggleArmorType(view.viewer().player(), "chest")), 2, 1))
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("leggings", view.viewer().player()), context -> Keys.setToggleArmorType(view.viewer().player(), "leggings")), 3, 1))
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("boots", view.viewer().player()), context -> Keys.setToggleArmorType(view.viewer().player(), "boots")), 4, 1))
                 .addTransform(chestItem(ItemStackElement.of(help), 6, 1))
                 .addTransform(chestItem(ItemStackElement.of(bug), 7, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(close, context -> context.viewer().close()), 8, 1))

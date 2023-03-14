@@ -14,6 +14,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
 
@@ -85,17 +86,33 @@ public class ArmorManager {
 
     public Component getItemDurability(ItemStack itemStack) {
         Damageable damageMeta = (Damageable) itemStack.getItemMeta();
-        int MaxDurability = itemStack.getType().getMaxDurability();
-        int currentDurability = MaxDurability - damageMeta.getDamage();
+
+        double MaxDurability = itemStack.getType().getMaxDurability();
+        double currentDurability = MaxDurability - damageMeta.getDamage();
+        double percentage = (100 - (damageMeta.getDamage() * 100 / MaxDurability)) / 100;
 
         return Component.text()
                 .append(Component.text("耐久値 : "))
-                .append(Component.text(currentDurability))
+                .append(Component.text()
+                        .content(String.valueOf((int) currentDurability))
+                        .color(TextColor.fromCSSHexString(getGradientColor(percentage, "#56ab2f", "#dd3e54")))
+                        .build())
                 .append(Component.text("/"))
-                .append(Component.text(MaxDurability))
+                .append(Component.text((int) MaxDurability))
                 .decoration(TextDecoration.ITALIC, false)
                 .color(TextColor.color(NamedTextColor.WHITE))
                 .build();
+    }
+
+    public static String getGradientColor(double percentage, String startColor, String endColor) {
+        Color start = Color.decode(startColor);
+        Color end = Color.decode(endColor);
+
+        int red = (int) (end.getRed() + percentage * (start.getRed() - end.getRed()));
+        int green = (int) (end.getGreen() + percentage * (start.getGreen() - end.getGreen()));
+        int blue = (int) (end.getBlue() + percentage * (start.getBlue() - end.getBlue()));
+
+        return String.format("#%02x%02x%02x", red, green, blue);
     }
 
     public Material ButtonMaterial(ItemStack itemStack) {
@@ -105,16 +122,15 @@ public class ArmorManager {
 
         int percentage = 100 - (damageMeta.getDamage() * 100 / MaxDurability);
 
-        if (percentage > 67) {
+        if (percentage >= 67) {
             return Material.POLISHED_BLACKSTONE_BUTTON;
         }
-        if (percentage <= 66 && percentage >= 33) {
+        else if (percentage >= 33) {
             return Material.WARPED_BUTTON;
         }
-        if (percentage <= 32) {
+        else {
             return Material.MANGROVE_BUTTON;
         }
-        return null;
     }
 
     public ItemStack getArmor(int i, PlayerInventory inv) {

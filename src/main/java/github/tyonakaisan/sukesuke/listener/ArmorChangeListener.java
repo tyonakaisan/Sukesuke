@@ -1,7 +1,6 @@
 package github.tyonakaisan.sukesuke.listener;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
-import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
 import github.tyonakaisan.sukesuke.manager.Keys;
 import org.bukkit.entity.Player;
@@ -12,11 +11,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 public class ArmorChangeListener implements Listener {
-    Sukesuke plugin;
-    ArmorPacketManager armorPacketManager;
+    private final ArmorPacketManager armorPacketManager;
 
-    public ArmorChangeListener(Sukesuke pl, ArmorPacketManager am){
-        this.plugin = pl;
+    public ArmorChangeListener(ArmorPacketManager am){
         this.armorPacketManager = am;
     }
 

@@ -1,6 +1,5 @@
 package github.tyonakaisan.sukesuke.listener;
 
-import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
 import github.tyonakaisan.sukesuke.manager.Keys;
 import org.bukkit.entity.Player;
@@ -10,11 +9,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.persistence.PersistentDataType;
 
 public class PlayerJoinListener implements Listener {
-    private final Sukesuke plugin;
     private final ArmorPacketManager armorPacketManager;
 
-    public PlayerJoinListener(Sukesuke pl, ArmorPacketManager am) {
-        this.plugin = pl;
+    public PlayerJoinListener(ArmorPacketManager am) {
         this.armorPacketManager = am;
     }
 

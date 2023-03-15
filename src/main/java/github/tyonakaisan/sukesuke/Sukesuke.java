@@ -15,18 +15,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.incendo.interfaces.paper.PaperInterfaceListeners;
 
 public final class Sukesuke extends JavaPlugin {
-private static Sukesuke plugin;
+private static Sukesuke sukesuke;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
-        plugin = this;
+        sukesuke = this;
         PaperInterfaceListeners.install(this);
 
         //manager
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
         ArmorManager armorManager = new ArmorManager();
-        ArmorPacketManager armorPacketManager = new ArmorPacketManager(this, armorManager, protocolManager);
+        ArmorPacketManager armorPacketManager = new ArmorPacketManager(armorManager, protocolManager);
 
         //command
         getCommand("suke").setExecutor(new PlayerCommands(this, armorPacketManager));
@@ -36,10 +36,10 @@ private static Sukesuke plugin;
         new OthersPacketListener(this, protocolManager, armorManager);
 
         //event
-        getServer().getPluginManager().registerEvents(new ArmorChangeListener(this, armorPacketManager), this);
+        getServer().getPluginManager().registerEvents(new ArmorChangeListener(armorPacketManager), this);
         getServer().getPluginManager().registerEvents(new GameModeChangeListener(this, armorPacketManager), this);
-        getServer().getPluginManager().registerEvents(new PlayerArmSwingListener(this, armorPacketManager), this);
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this, armorPacketManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerArmSwingListener(armorPacketManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(armorPacketManager), this);
     }
 
     @Override
@@ -49,6 +49,6 @@ private static Sukesuke plugin;
     }
 
     public static Sukesuke getPlugin() {
-        return plugin;
+        return sukesuke;
     }
 }

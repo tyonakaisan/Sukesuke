@@ -5,7 +5,6 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
-import github.tyonakaisan.sukesuke.Sukesuke;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -15,12 +14,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class ArmorPacketManager {
-    private final Sukesuke plugin;
     private final ArmorManager armorManager;
     private final ProtocolManager protocolManager;
 
-    public ArmorPacketManager(Sukesuke pl, ArmorManager am, ProtocolManager pm) {
-        this.plugin = pl;
+    public ArmorPacketManager(ArmorManager am, ProtocolManager pm) {
         this.armorManager = am;
         this.protocolManager = pm;
     }

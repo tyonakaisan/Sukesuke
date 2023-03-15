@@ -9,13 +9,13 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class Keys {
 
-    private static final Sukesuke plugin = Sukesuke.getPlugin();
+    private static final Sukesuke sukesuke = Sukesuke.getPlugin();
 
-    public static final NamespacedKey HelmetKey = new NamespacedKey(plugin, "helmet");
-    public static final NamespacedKey ChestKey = new NamespacedKey(plugin, "chest");
-    public static final NamespacedKey LeggingsKey = new NamespacedKey(plugin, "leggings");
-    public static final NamespacedKey BootsKey = new NamespacedKey(plugin, "boots");
-    public static final NamespacedKey ToggleKey = new NamespacedKey(plugin, "toggle");
+    public static final NamespacedKey HelmetKey = new NamespacedKey(sukesuke, "helmet");
+    public static final NamespacedKey ChestKey = new NamespacedKey(sukesuke, "chest");
+    public static final NamespacedKey LeggingsKey = new NamespacedKey(sukesuke, "leggings");
+    public static final NamespacedKey BootsKey = new NamespacedKey(sukesuke, "boots");
+    public static final NamespacedKey ToggleKey = new NamespacedKey(sukesuke, "toggle");
 
     public static void setHideArmorKey(Player player) {
         var pdc = player.getPersistentDataContainer();
@@ -39,7 +39,7 @@ public class Keys {
 
     public static void setToggleArmorType(Player player, String key) {
         var pdc = player.getPersistentDataContainer();
-        NamespacedKey namespacedKey = new NamespacedKey(plugin, key);
+        NamespacedKey namespacedKey = new NamespacedKey(sukesuke, key);
 
         //trueであれば
         if (pdc.get(namespacedKey, PersistentDataType.STRING).equalsIgnoreCase("true")) {

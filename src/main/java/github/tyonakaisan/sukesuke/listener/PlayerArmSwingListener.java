@@ -1,6 +1,5 @@
 package github.tyonakaisan.sukesuke.listener;
 
-import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import org.bukkit.entity.Player;
@@ -12,11 +11,9 @@ import org.bukkit.inventory.EquipmentSlot;
 //パケットでやろうとしたけど上手く動作しなかったから代用
 
 public class PlayerArmSwingListener implements Listener {
-    Sukesuke plugin;
-    ArmorPacketManager armorPacketManager;
+    private final ArmorPacketManager armorPacketManager;
 
-    public PlayerArmSwingListener(Sukesuke pl, ArmorPacketManager am) {
-        this.plugin = pl;
+    public PlayerArmSwingListener(ArmorPacketManager am) {
         this.armorPacketManager = am;
     }
 

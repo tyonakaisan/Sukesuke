@@ -12,11 +12,11 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class GameModeChangeListener implements Listener {
-    Sukesuke plugin;
-    ArmorPacketManager armorPacketManager;
+    private final Sukesuke sukesuke;
+    private final ArmorPacketManager armorPacketManager;
 
-    public GameModeChangeListener(Sukesuke pl, ArmorPacketManager am){
-        this.plugin = pl;
+    public GameModeChangeListener(Sukesuke sk, ArmorPacketManager am){
+        this.sukesuke = sk;
         this.armorPacketManager = am;
     }
 
@@ -35,7 +35,7 @@ public class GameModeChangeListener implements Listener {
                     Keys.setToggleArmorType(player, "toggle");
                     armorPacketManager.sendPacket(player);
                 }
-            }.runTaskLater(plugin, 1L);
+            }.runTaskLater(sukesuke, 1L);
         }
     }
 }

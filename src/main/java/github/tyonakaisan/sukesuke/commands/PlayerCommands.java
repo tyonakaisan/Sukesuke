@@ -23,11 +23,11 @@ import java.util.List;
 
 public class PlayerCommands implements CommandExecutor, TabCompleter {
 
-    private final Sukesuke plugin;
+    private final Sukesuke sukesuke;
     private final ArmorPacketManager armorPacketManager;
 
-    public PlayerCommands(Sukesuke pl, ArmorPacketManager am) {
-        this.plugin = pl;
+    public PlayerCommands(Sukesuke sk, ArmorPacketManager am) {
+        this.sukesuke = sk;
         this.armorPacketManager = am;
     }
 
@@ -43,7 +43,7 @@ public class PlayerCommands implements CommandExecutor, TabCompleter {
                             return true;
                         }
                         case "gui" -> {
-                            new SettingsMenu(plugin).buildInterface().open(PlayerViewer.of(player));
+                            new SettingsMenu(sukesuke).buildInterface().open(PlayerViewer.of(player));
                             return true;
                         }
                     }

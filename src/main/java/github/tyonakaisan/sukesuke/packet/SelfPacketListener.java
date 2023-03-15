@@ -18,8 +18,8 @@ import java.util.List;
 
 public class SelfPacketListener {
 
-    public SelfPacketListener(Sukesuke plugin, ProtocolManager protocolManager, ArmorManager armorManager) {
-        PacketAdapter.AdapterParameteters params = PacketAdapter.params().plugin(plugin)
+    public SelfPacketListener(Sukesuke sukesuke, ProtocolManager protocolManager, ArmorManager armorManager) {
+        PacketAdapter.AdapterParameteters params = PacketAdapter.params().plugin(sukesuke)
                 .listenerPriority(ListenerPriority.HIGH)
                 .types(PacketType.Play.Server.SET_SLOT, PacketType.Play.Server.WINDOW_ITEMS);
 

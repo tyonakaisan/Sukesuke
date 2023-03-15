@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class SettingsMenu extends AbstractMenu {
-    private final Sukesuke plugin;
+    private final Sukesuke sukesuke;
 
-    public SettingsMenu(Sukesuke pl) {
-        this.plugin = pl;
+    public SettingsMenu(Sukesuke sukesuke) {
+        this.sukesuke = sukesuke;
     }
 
     private static final ItemStack help = PaperItemBuilder.ofType(Material.LIGHT)
@@ -277,7 +277,7 @@ public class SettingsMenu extends AbstractMenu {
         PaperItemBuilder.ofType(Material.BARRIER).build();
         ItemStack item;
 
-        if (Objects.requireNonNull(player.getPersistentDataContainer().get(new NamespacedKey(plugin, Key), PersistentDataType.STRING)).equalsIgnoreCase("true")) {
+        if (Objects.requireNonNull(player.getPersistentDataContainer().get(new NamespacedKey(sukesuke, Key), PersistentDataType.STRING)).equalsIgnoreCase("true")) {
             item = toggleInVisible;
         } else {
             item = toggleVisible;

@@ -21,8 +21,8 @@ import java.util.List;
 
 public class OthersPacketListener {
 
-    public OthersPacketListener(Sukesuke plugin, ProtocolManager protocolManager, ArmorManager armorManager) {
-        protocolManager.addPacketListener(new PacketAdapter(plugin, PacketType.Play.Server.ENTITY_EQUIPMENT) {
+    public OthersPacketListener(Sukesuke sukesuke, ProtocolManager protocolManager, ArmorManager armorManager) {
+        protocolManager.addPacketListener(new PacketAdapter(sukesuke, PacketType.Play.Server.ENTITY_EQUIPMENT) {
             @Override
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket();

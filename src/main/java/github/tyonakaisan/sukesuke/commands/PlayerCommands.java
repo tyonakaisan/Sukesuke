@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class PlayerCommands implements CommandExecutor, TabCompleter {
 
@@ -52,14 +51,29 @@ public class PlayerCommands implements CommandExecutor, TabCompleter {
                 Keys.setToggleArmorType(player, "toggle");
                 armorPacketManager.sendPacket(player);
                 //actionbar
-                String toggle = player.getPersistentDataContainer().get(Keys.ToggleKey, PersistentDataType.STRING);
+                String isToggle = player.getPersistentDataContainer().get(Keys.ToggleKey, PersistentDataType.STRING);
+                Component toggle;
+
+                if (isToggle.equalsIgnoreCase("true")) {
+                    toggle = Component.text()
+                            .append(Component.text("非表示中!"))
+                            .decoration(TextDecoration.BOLD, true)
+                            .decoration(TextDecoration.ITALIC, false)
+                            .build();
+                } else {
+                    toggle = Component.text()
+                            .append(Component.text("表示中!"))
+                            .decoration(TextDecoration.BOLD, true)
+                            .decoration(TextDecoration.ITALIC, false)
+                            .build();
+                }
 
                 Component actionBar = Component.text()
                         .append(Component.text("すけすけモード: ")
                                 .decoration(TextDecoration.BOLD, true)
                                 .decoration(TextDecoration.ITALIC, false)
                                 .color(TextColor.fromCSSHexString("#00fa9a")))
-                        .append(Component.text(Objects.requireNonNull(toggle)))
+                        .append(toggle)
                         .build();
                 player.sendActionBar(actionBar);
                 return true;

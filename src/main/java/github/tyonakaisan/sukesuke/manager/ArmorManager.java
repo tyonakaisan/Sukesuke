@@ -1,14 +1,10 @@
 package github.tyonakaisan.sukesuke.manager;
 
-import com.google.common.collect.Multimap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
@@ -16,7 +12,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.awt.*;
 import java.util.List;
-import java.util.Map;
 
 public class ArmorManager {
     public ItemStack HideArmor(ItemStack itemStack) {
@@ -44,44 +39,19 @@ public class ArmorManager {
                         .color(TextColor.color(NamedTextColor.GRAY))
                         .build()));
 
-        //エリトラの場合
+        //エリトラの場合はそのまま返す
         if (itemStack.getType().equals(Material.ELYTRA)) {
-            itemMeta = hideElytra(itemStack);
+            return itemStack;
         }
+        //それ以外はボタンに
         else {
             itemStack.setType(ButtonMaterial(itemStack));
         }
+        //おまけのカスタムモデルデータ
+        itemMeta.setCustomModelData(1);
 
         itemStack.setItemMeta(itemMeta);
         return itemStack;
-    }
-
-    //そのまま
-    public ItemMeta hideElytra(ItemStack itemStack){
-        ItemMeta itemMeta = itemStack.getItemMeta();
-
-        // Storing the elytra current enchantments, attributes and damage
-        Map<Enchantment, Integer> encs = itemMeta.getEnchants();
-        Multimap<Attribute, AttributeModifier> attrs = itemMeta.getAttributeModifiers();
-        int damage = ((org.bukkit.inventory.meta.Damageable) itemMeta).getDamage();
-
-        itemStack = new ItemStack(Material.ELYTRA);
-
-        // Getting item meta from the new elytra
-        itemMeta = itemStack.getItemMeta();
-
-        // Applying stored enchantments to the new elytra
-        for (Enchantment key : encs.keySet()) {
-            itemMeta.addEnchant(key, encs.get(key), true);
-        }
-
-        // Applying stored attributes to the new elytra
-        itemMeta.setAttributeModifiers(attrs);
-
-        // Applying stored damage to the new elytra
-        ((org.bukkit.inventory.meta.Damageable) itemMeta).setDamage(damage);
-
-        return itemMeta;
     }
 
     public Component getItemDurability(ItemStack itemStack) {
@@ -90,6 +60,10 @@ public class ArmorManager {
         double MaxDurability = itemStack.getType().getMaxDurability();
         double currentDurability = MaxDurability - damageMeta.getDamage();
         double percentage = (100 - (damageMeta.getDamage() * 100 / MaxDurability)) / 100;
+
+        if (Double.isNaN(percentage)) {
+            return Component.text().build();
+        }
 
         return Component.text()
                 .append(Component.text("耐久値 : "))

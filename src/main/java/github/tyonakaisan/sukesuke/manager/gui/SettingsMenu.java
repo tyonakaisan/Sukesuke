@@ -48,7 +48,7 @@ public class SettingsMenu extends AbstractMenu {
                             .color(NamedTextColor.GRAY)
                             .build(),
                     Component.text()
-                            .append(Component.text("表示がおかしくなった場合は/suke suke もしくは"))
+                            .append(Component.text("表示がおかしくなった場合は"))
                             .decoration(TextDecoration.ITALIC, false)
                             .color(NamedTextColor.GRAY)
                             .build(),
@@ -56,6 +56,11 @@ public class SettingsMenu extends AbstractMenu {
                             .append(Component.text("もう一度装備を着直したら治ります"))
                             .decoration(TextDecoration.ITALIC, false)
                             .color(NamedTextColor.GRAY)
+                            .build(),
+                    Component.text()
+                            .append(Component.text("また、エリトラは強制的に表示されます"))
+                            .decoration(TextDecoration.ITALIC, false)
+                            .color(NamedTextColor.GOLD)
                             .build()))
             .build();
 
@@ -68,7 +73,7 @@ public class SettingsMenu extends AbstractMenu {
                     .build())
             .lore(List.of(
                     Component.text()
-                            .append(Component.text("・皮の装備を着た場合に"))
+                            .append(Component.text("・特定の装備を着た際に"))
                             .decoration(TextDecoration.ITALIC, false)
                             .color(TextColor.fromCSSHexString("#dc143c"))
                             .build(),
@@ -168,7 +173,7 @@ public class SettingsMenu extends AbstractMenu {
                     .decoration(TextDecoration.ITALIC, false)
                 .build())
             .lore(List.of(Component.text()
-                    .append(Component.text("クリックして表示!"))
+                    .append(Component.text("クリックして表示に切り替える!"))
                     .decoration(TextDecoration.ITALIC, false)
                     .color(TextColor.fromCSSHexString("#ffd700"))
                     .build()))
@@ -181,7 +186,7 @@ public class SettingsMenu extends AbstractMenu {
                     .decoration(TextDecoration.ITALIC, false)
                     .build())
             .lore(List.of(Component.text()
-                    .append(Component.text("クリックして非表示!"))
+                    .append(Component.text("クリックして非表示に切り替える!"))
                     .decoration(TextDecoration.ITALIC, false)
                     .color(TextColor.fromCSSHexString("#ffd700"))
                     .build()))

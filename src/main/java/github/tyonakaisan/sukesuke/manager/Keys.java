@@ -7,6 +7,8 @@ import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Objects;
+
 public class Keys {
 
     private static final Sukesuke sukesuke = Sukesuke.getPlugin();
@@ -42,7 +44,7 @@ public class Keys {
         NamespacedKey namespacedKey = new NamespacedKey(sukesuke, key);
 
         //trueであれば
-        if (pdc.get(namespacedKey, PersistentDataType.STRING).equalsIgnoreCase("true")) {
+        if (Objects.requireNonNull(pdc.get(namespacedKey, PersistentDataType.STRING)).equalsIgnoreCase("true")) {
             //削除->追加
             pdc.remove(namespacedKey);
             pdc.set(namespacedKey, PersistentDataType.STRING, "false");

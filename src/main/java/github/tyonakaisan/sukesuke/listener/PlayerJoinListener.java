@@ -8,6 +8,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Objects;
+
 public class PlayerJoinListener implements Listener {
     private final ArmorPacketManager armorPacketManager;
 
@@ -19,12 +21,9 @@ public class PlayerJoinListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        //toggleKeyチェック
-        if (!player.getPersistentDataContainer().has(Keys.ToggleKey)) {
-            Keys.setHideArmorKey(player);
-        }
+        Keys.setHideArmorKey(player);
 
-        if (player.hasPermission("sukesuke.suke") && player.getPersistentDataContainer().get(Keys.ToggleKey, PersistentDataType.STRING).equalsIgnoreCase("true")) {
+        if (player.hasPermission("sukesuke.suke") && Objects.requireNonNull(player.getPersistentDataContainer().get(Keys.ToggleKey, PersistentDataType.STRING)).equalsIgnoreCase("true")) {
             armorPacketManager.sendPacket(player);
         }
     }

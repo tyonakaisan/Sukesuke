@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
+import java.util.Objects;
 
 public class OthersPacketListener {
 
@@ -27,16 +28,19 @@ public class OthersPacketListener {
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket();
                 Player player = event.getPlayer();
+                var pdc = player.getPersistentDataContainer();
+                //もりぱぱっち
+                if (!pdc.has(Keys.ToggleKey)) {
+                    Keys.setHideArmorKey(player);
+                }
 
                 LivingEntity livingEntity = (LivingEntity) protocolManager.getEntityFromID(player.getWorld(), packet.getIntegers().read(0));
-                if (!(livingEntity instanceof Player)) return;
-                Player livPlayer = (Player) livingEntity;
+                if (!(livingEntity instanceof Player livPlayer)) return;
 
                 //パーミッションチェック
                 if (livPlayer.hasPermission("sukesuke.suke")) {
-                    var pdc = livPlayer.getPersistentDataContainer();
-                    //self_toggle = falseであれば or Creativeモード であれば返す
-                    if (pdc.get(Keys.ToggleKey, PersistentDataType.STRING).equalsIgnoreCase("false")
+                    //toggle = falseであれば or Creativeモード であれば返す
+                    if (Objects.requireNonNull(pdc.get(Keys.ToggleKey, PersistentDataType.STRING)).equalsIgnoreCase("false")
                             || livPlayer.getGameMode().equals(GameMode.CREATIVE)) {
                         return;
                     }
@@ -45,19 +49,19 @@ public class OthersPacketListener {
 
                     pairList.stream().filter(OthersPacketListener::isArmorSlot).forEach(slotPair -> {
                         //ヘルメット
-                        if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.HEAD) && pdc.get(Keys.HelmetKey, PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                        if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.HEAD) && Objects.requireNonNull(pdc.get(Keys.HelmetKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                             slotPair.setSecond(slotPair.getSecond().clone());
                         }
                         //チェスト
-                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.CHEST) && pdc.get(Keys.ChestKey, PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.CHEST) && Objects.requireNonNull(pdc.get(Keys.ChestKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                             slotPair.setSecond(slotPair.getSecond().clone());
                         }
                         //レギンス
-                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.LEGS) && pdc.get(Keys.LeggingsKey, PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.LEGS) && Objects.requireNonNull(pdc.get(Keys.LeggingsKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                             slotPair.setSecond(slotPair.getSecond().clone());
                         }
                         //ブーツ
-                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.FEET) && pdc.get(Keys.BootsKey, PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.FEET) && Objects.requireNonNull(pdc.get(Keys.BootsKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                             slotPair.setSecond(slotPair.getSecond().clone());
                         }
                         //エリトラ

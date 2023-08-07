@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 public class ArmorPacketManager {
@@ -38,11 +37,7 @@ public class ArmorPacketManager {
             ItemStack armor = armorManager.getArmor(i, inventory);
             packetSelf.getItemModifier().write(0, armor);
 
-            try {
-                protocolManager.sendServerPacket(player, packetSelf);
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            protocolManager.sendServerPacket(player, packetSelf);
         }
     }
 
@@ -67,11 +62,7 @@ public class ArmorPacketManager {
     private static void broadcastPlayerPacket(ProtocolManager manager, PacketContainer packet, Player player) {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.getWorld().equals(player.getWorld()) && !p.equals(player)) {
-                try {
-                    manager.sendServerPacket(p, packet);
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+                manager.sendServerPacket(p, packet);
             }
         }
     }

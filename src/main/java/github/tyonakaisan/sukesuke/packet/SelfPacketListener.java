@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SelfPacketListener {
 
@@ -28,11 +29,16 @@ public class SelfPacketListener {
             public void onPacketSending(PacketEvent event) {
                 PacketContainer packet = event.getPacket();
                 Player player = event.getPlayer();
+                var pdc = player.getPersistentDataContainer();
+                //もりぱぱっち
+                if (!pdc.has(Keys.ToggleKey)) {
+                    Keys.setHideArmorKey(player);
+                }
+
                 //パーミッションチェック
                 if (player.hasPermission("sukesuke.suke")) {
-                    var pdc = player.getPersistentDataContainer();
                     //self_toggle = falseであれば or Creativeモード であれば返す
-                    if (pdc.get(Keys.ToggleKey, PersistentDataType.STRING).equalsIgnoreCase("false")
+                    if (Objects.requireNonNull(pdc.get(Keys.ToggleKey, PersistentDataType.STRING)).equalsIgnoreCase("false")
                             || player.getGameMode().equals(GameMode.CREATIVE)) return;
 
                     //SET_SLOT
@@ -40,9 +46,10 @@ public class SelfPacketListener {
                         switch (packet.getIntegers().read(2)) {
                             case 5 -> {
                                 ItemStack itemStack = packet.getItemModifier().read(0);
+                                System.out.println(itemStack);
 
                                 //false(表示)だったら
-                                if (pdc.get(Keys.HelmetKey, PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                                if (Objects.requireNonNull(pdc.get(Keys.HelmetKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                                     packet.getItemModifier().write(0, itemStack);
                                 }
 
@@ -55,7 +62,7 @@ public class SelfPacketListener {
                                 ItemStack itemStack = packet.getItemModifier().read(0);
 
                                 //false(表示)だったら
-                                if (pdc.get(Keys.ChestKey, PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                                if (Objects.requireNonNull(pdc.get(Keys.ChestKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                                     packet.getItemModifier().write(0, itemStack);
                                 }
 
@@ -68,7 +75,7 @@ public class SelfPacketListener {
                                 ItemStack itemStack = packet.getItemModifier().read(0);
 
                                 //false(表示)だったら
-                                if (pdc.get(Keys.LeggingsKey, PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                                if (Objects.requireNonNull(pdc.get(Keys.LeggingsKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                                     packet.getItemModifier().write(0, itemStack);
                                 }
 
@@ -81,7 +88,7 @@ public class SelfPacketListener {
                                 ItemStack itemStack = packet.getItemModifier().read(0);
 
                                 //false(表示)だったら
-                                if (pdc.get(Keys.BootsKey, PersistentDataType.STRING).equalsIgnoreCase("false")) {
+                                if (Objects.requireNonNull(pdc.get(Keys.BootsKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                                     packet.getItemModifier().write(0, itemStack);
                                 }
 
@@ -92,28 +99,28 @@ public class SelfPacketListener {
                             }
                         }
                     }
-
                     //WINDOW_ITEMS
                     if (packet.getType().equals(PacketType.Play.Server.WINDOW_ITEMS) && packet.getIntegers().read(0).equals(0)) {
                         List<ItemStack> itemStacks = packet.getItemListModifier().read(0);
 
-                        if (pdc.get(Keys.HelmetKey, PersistentDataType.STRING).equalsIgnoreCase("true")) {
+                        if (Objects.requireNonNull(pdc.get(Keys.HelmetKey, PersistentDataType.STRING)).equalsIgnoreCase("true")) {
                             ItemStack armor = itemStacks.get(5);
                             armor.setItemMeta(armorManager.HideArmor(armor).getItemMeta());
                         }
-                        if (pdc.get(Keys.ChestKey, PersistentDataType.STRING).equalsIgnoreCase("true")) {
+                        if (Objects.requireNonNull(pdc.get(Keys.ChestKey, PersistentDataType.STRING)).equalsIgnoreCase("true")) {
                             ItemStack armor = itemStacks.get(6);
                             armor.setItemMeta(armorManager.HideArmor(armor).getItemMeta());
                         }
-                        if (pdc.get(Keys.LeggingsKey, PersistentDataType.STRING).equalsIgnoreCase("true")) {
+                        if (Objects.requireNonNull(pdc.get(Keys.LeggingsKey, PersistentDataType.STRING)).equalsIgnoreCase("true")) {
                             ItemStack armor = itemStacks.get(7);
                             armor.setItemMeta(armorManager.HideArmor(armor).getItemMeta());
                         }
-                        if (pdc.get(Keys.BootsKey, PersistentDataType.STRING).equalsIgnoreCase("true")) {
+                        if (Objects.requireNonNull(pdc.get(Keys.BootsKey, PersistentDataType.STRING)).equalsIgnoreCase("true")) {
                             ItemStack armor = itemStacks.get(8);
                             armor.setItemMeta(armorManager.HideArmor(armor).getItemMeta());
                         }
                     }
+
                 }
             }
         });

@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class PlayerCommands implements CommandExecutor, TabCompleter {
 
@@ -33,20 +34,31 @@ public class PlayerCommands implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
+        if (sender instanceof Player player) {
             if (player.hasPermission("sukesuke.suke")) {
                 if (args.length == 1) {
                     switch (args[0]) {
                         case "suke" -> {
+                            //toggleKeyチェック
+                            if (!player.getPersistentDataContainer().has(Keys.ToggleKey)) {
+                                Keys.setHideArmorKey(player);
+                            }
                             armorPacketManager.sendPacket(player);
                             return true;
                         }
                         case "gui" -> {
+                            //toggleKeyチェック
+                            if (!player.getPersistentDataContainer().has(Keys.ToggleKey)) {
+                                Keys.setHideArmorKey(player);
+                            }
                             new SettingsMenu(sukesuke).buildInterface().open(PlayerViewer.of(player));
                             return true;
                         }
                     }
+                }
+                //toggleKeyチェック
+                if (!player.getPersistentDataContainer().has(Keys.ToggleKey)) {
+                    Keys.setHideArmorKey(player);
                 }
                 Keys.setToggleArmorType(player, "toggle");
                 armorPacketManager.sendPacket(player);
@@ -54,7 +66,7 @@ public class PlayerCommands implements CommandExecutor, TabCompleter {
                 String isToggle = player.getPersistentDataContainer().get(Keys.ToggleKey, PersistentDataType.STRING);
                 Component toggle;
 
-                if (isToggle.equalsIgnoreCase("true")) {
+                if (Objects.requireNonNull(isToggle).equalsIgnoreCase("true")) {
                     toggle = Component.text()
                             .append(Component.text("非表示中!"))
                             .decoration(TextDecoration.BOLD, true)

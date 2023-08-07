@@ -10,6 +10,8 @@ import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.Objects;
+
 public class ArmorChangeListener implements Listener {
     private final ArmorPacketManager armorPacketManager;
 
@@ -21,8 +23,13 @@ public class ArmorChangeListener implements Listener {
     public void onPlayerArmorChange(PlayerArmorChangeEvent event) {
         Player player = event.getPlayer();
         ItemStack new_armor = event.getNewItem();
-
-        if (player.getPersistentDataContainer().get(Keys.ToggleKey, PersistentDataType.STRING).equalsIgnoreCase("false")) return;
+        var pdc = player.getPersistentDataContainer();
+        //もりぱぱっち
+        //toggleKeyチェック
+        if (!player.getPersistentDataContainer().has(Keys.ToggleKey)) {
+            Keys.setHideArmorKey(player);
+        }
+        if (Objects.requireNonNull(pdc.get(Keys.ToggleKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) return;
         if (new_armor == null) return;
 
         armorPacketManager.sendPacket(player);
@@ -33,7 +40,9 @@ public class ArmorChangeListener implements Listener {
     public void onPlayerToggleGlide(EntityToggleGlideEvent event){
         if(!(event.getEntity() instanceof Player)) return;
         Player player = (Player) event.getEntity();
-
+        var pdc = player.getPersistentDataContainer();
+        //もりぱぱっち
+        if (!pdc.has(Keys.ToggleKey)) return;
         if (player.getPersistentDataContainer().get(Keys.ToggleKey, PersistentDataType.STRING).equalsIgnoreCase("false")) return;
 
         armorPacketManager.sendPacket(player);

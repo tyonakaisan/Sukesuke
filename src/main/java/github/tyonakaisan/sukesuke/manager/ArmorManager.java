@@ -13,6 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.awt.*;
 import java.util.List;
 
+
 public class ArmorManager {
     public ItemStack HideArmor(ItemStack itemStack) {
         if (itemStack.getType().equals(Material.AIR)) return itemStack;
@@ -45,12 +46,16 @@ public class ArmorManager {
         }
         //それ以外はボタンに
         else {
-            itemStack.setType(ButtonMaterial(itemStack));
+            itemStack.setType(Material.CONDUIT);
         }
         //おまけのカスタムモデルデータ
         itemMeta.setCustomModelData(1);
 
         itemStack.setItemMeta(itemMeta);
+
+        System.out.println(itemMeta);
+        System.out.println(itemStack.setItemMeta(itemMeta));
+        System.out.println(itemStack);
         return itemStack;
     }
 
@@ -68,11 +73,11 @@ public class ArmorManager {
         return Component.text()
                 .append(Component.text("耐久値 : "))
                 .append(Component.text()
-                        .content(String.valueOf((int) currentDurability))
+                        .content(String.valueOf(currentDurability))
                         .color(TextColor.fromCSSHexString(getGradientColor(percentage, "#56ab2f", "#dd3e54")))
                         .build())
                 .append(Component.text("/"))
-                .append(Component.text((int) MaxDurability))
+                .append(Component.text(MaxDurability))
                 .decoration(TextDecoration.ITALIC, false)
                 .color(TextColor.color(NamedTextColor.WHITE))
                 .build();

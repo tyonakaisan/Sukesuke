@@ -25,11 +25,11 @@ public class ArmorPacketManager {
     }
 
     public void sendPacket(Player player) {
-        SelfPacket(player);
-        OthersPacket(player);
+        selfPacket(player);
+        othersPacket(player);
     }
 
-    public void SelfPacket(Player player) {
+    public void selfPacket(Player player) {
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 
         PlayerInventory inventory = player.getInventory();
@@ -46,7 +46,7 @@ public class ArmorPacketManager {
         }
     }
 
-    public void OthersPacket(Player player) {
+    public void othersPacket(Player player) {
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 
         PlayerInventory inv = player.getInventory();

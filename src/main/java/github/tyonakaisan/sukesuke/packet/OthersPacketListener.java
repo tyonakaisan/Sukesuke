@@ -36,16 +36,14 @@ public class OthersPacketListener {
 
                 LivingEntity livingEntity = (LivingEntity) protocolManager.getEntityFromID(player.getWorld(), packet.getIntegers().read(0));
                 if (!(livingEntity instanceof Player livPlayer)) return;
-
+                var ldc = livPlayer.getPersistentDataContainer();
                 //パーミッションチェック
                 if (livPlayer.hasPermission("sukesuke.suke")) {
                     //toggle = falseであれば or Creativeモード であれば返す
-                    if (Objects.requireNonNull(pdc.get(Keys.ToggleKey, PersistentDataType.STRING)).equalsIgnoreCase("false")
+                    if (Objects.requireNonNull(ldc.get(Keys.ToggleKey, PersistentDataType.STRING)).equalsIgnoreCase("false")
                             || livPlayer.getGameMode().equals(GameMode.CREATIVE)) {
                         return;
                     }
-
-                    var ldc = livPlayer.getPersistentDataContainer();
 
                     List<Pair<EnumWrappers.ItemSlot, ItemStack>> pairList = packet.getSlotStackPairLists().read(0);
 

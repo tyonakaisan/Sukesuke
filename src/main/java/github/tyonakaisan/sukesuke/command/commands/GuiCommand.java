@@ -16,14 +16,17 @@ import org.incendo.interfaces.paper.PlayerViewer;
 public class GuiCommand implements SukesukeCommand {
 
     private final Sukesuke sukesuke;
+    private final SettingsMenu settingsMenu;
     private final CommandManager<CommandSender> commandManager;
 
     @Inject
     GuiCommand(
             Sukesuke sukesuke,
+            SettingsMenu settingsMenu,
             CommandManager<CommandSender> commandManager
     ) {
         this.sukesuke = sukesuke;
+        this.settingsMenu = settingsMenu;
         this.commandManager = commandManager;
     }
 
@@ -39,7 +42,7 @@ public class GuiCommand implements SukesukeCommand {
                         Keys.setHideArmorKey(sender);
                     }
 
-                    new SettingsMenu(sukesuke).buildInterface().open(PlayerViewer.of(sender));
+                    settingsMenu.buildInterface().open(PlayerViewer.of(sender));
                 })
                 .build();
 

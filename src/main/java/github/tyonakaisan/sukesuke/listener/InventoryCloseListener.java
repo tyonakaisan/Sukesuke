@@ -6,26 +6,26 @@ import github.tyonakaisan.sukesuke.manager.Keys;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Objects;
 
-public class PlayerJoinListener implements Listener {
+public class InventoryCloseListener implements Listener {
+
     private final ArmorPacketManager armorPacketManager;
 
     @Inject
-    public PlayerJoinListener(
+    public InventoryCloseListener(
             ArmorPacketManager armorPacketManager
     ) {
         this.armorPacketManager = armorPacketManager;
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
+    public void onClose(InventoryCloseEvent event) {
 
-        Keys.setHideArmorKey(player);
+        var player = (Player) event.getPlayer();
 
         if (player.hasPermission("sukesuke.suke")
                 && Objects.requireNonNull(player.getPersistentDataContainer().get(Keys.ToggleKey, PersistentDataType.STRING)).equalsIgnoreCase("true")) {

@@ -2,6 +2,7 @@ package github.tyonakaisan.sukesuke.listener;
 
 import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import com.google.inject.Inject;
+import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
 import github.tyonakaisan.sukesuke.manager.Keys;
 import org.bukkit.entity.Player;
@@ -10,16 +11,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Objects;
 
 public class ArmorChangeListener implements Listener {
+    private final Sukesuke sukesuke;
     private final ArmorPacketManager armorPacketManager;
 
     @Inject
     public ArmorChangeListener(
+            Sukesuke sukesuke,
             ArmorPacketManager armorPacketManager
     ) {
+        this.sukesuke = sukesuke;
         this.armorPacketManager = armorPacketManager;
     }
 
@@ -48,6 +53,13 @@ public class ArmorChangeListener implements Listener {
         if (!pdc.has(Keys.ToggleKey)) return;
         if (Objects.requireNonNull(player.getPersistentDataContainer().get(Keys.ToggleKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) return;
 
-        armorPacketManager.sendPacket(player);
+        player.sendRichMessage("a");
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                armorPacketManager.sendPacket(player);
+            }
+        }.runTaskLater(sukesuke, 1L);
     }
 }

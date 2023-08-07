@@ -1,6 +1,8 @@
 package github.tyonakaisan.sukesuke.manager.gui;
 
+import com.google.inject.Inject;
 import github.tyonakaisan.sukesuke.Sukesuke;
+import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
 import github.tyonakaisan.sukesuke.manager.Keys;
 import github.tyonakaisan.sukesuke.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
@@ -9,6 +11,7 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -24,9 +27,18 @@ import java.util.Objects;
 
 public class SettingsMenu extends AbstractMenu {
     private final Sukesuke sukesuke;
+    private final ArmorPacketManager armorPacketManager;
+    private final Server server;
 
-    public SettingsMenu(Sukesuke sukesuke) {
+    @Inject
+    public SettingsMenu(
+            Sukesuke sukesuke,
+            ArmorPacketManager armorPacketManager,
+            Server server
+    ) {
         this.sukesuke = sukesuke;
+        this.armorPacketManager = armorPacketManager;
+        this.server = server;
     }
 
     private static final ItemStack help = ItemBuilder.of(Material.LIGHT)
@@ -218,15 +230,30 @@ public class SettingsMenu extends AbstractMenu {
                 .addTransform(leggings())
                 .addTransform(boots())
                 //2段目
-                //toggle実装したけどなぜか自分の見た目だけ変わらなかったのでコマンドで代用
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("helmet", view.viewer().player()), context -> Keys.setToggleArmorType(view.viewer().player(), "helmet")), 1, 1))
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("chest", view.viewer().player()), context -> Keys.setToggleArmorType(view.viewer().player(), "chest")), 2, 1))
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("leggings", view.viewer().player()), context -> Keys.setToggleArmorType(view.viewer().player(), "leggings")), 3, 1))
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("boots", view.viewer().player()), context -> Keys.setToggleArmorType(view.viewer().player(), "boots")), 4, 1))
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("helmet", view.viewer().player()), context -> {
+                    Keys.setToggleArmorType(view.viewer().player(), "helmet");
+                    armorPacketManager.sendPacket(viewerConvertPlayer(view.viewer()));
+                }), 1, 1))
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("chest", view.viewer().player()), context -> {
+                    Keys.setToggleArmorType(view.viewer().player(), "chest");
+                    armorPacketManager.sendPacket(viewerConvertPlayer(view.viewer()));
+                }), 2, 1))
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("leggings", view.viewer().player()), context -> {
+                    Keys.setToggleArmorType(view.viewer().player(), "leggings");
+                    armorPacketManager.sendPacket(viewerConvertPlayer(view.viewer()));
+                }), 3, 1))
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("boots", view.viewer().player()), context -> {
+                    Keys.setToggleArmorType(view.viewer().player(), "boots");
+                    armorPacketManager.sendPacket(viewerConvertPlayer(view.viewer()));
+                }), 4, 1))
                 .addTransform(chestItem(ItemStackElement.of(help), 6, 1))
                 .addTransform(chestItem(ItemStackElement.of(bug), 7, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(close, context -> context.viewer().close()), 8, 1))
         .build();
+    }
+
+    public Player viewerConvertPlayer(PlayerViewer viewer) {
+        return server.getPlayer(viewer.player().getUniqueId());
     }
 
     public Transform<ChestPane, PlayerViewer> helmet() {

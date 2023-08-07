@@ -7,10 +7,7 @@ import com.google.inject.Injector;
 import github.tyonakaisan.sukesuke.command.SukesukeCommand;
 import github.tyonakaisan.sukesuke.command.commands.GuiCommand;
 import github.tyonakaisan.sukesuke.command.commands.SukeCommand;
-import github.tyonakaisan.sukesuke.listener.ArmorChangeListener;
-import github.tyonakaisan.sukesuke.listener.GameModeChangeListener;
-import github.tyonakaisan.sukesuke.listener.PlayerArmSwingListener;
-import github.tyonakaisan.sukesuke.listener.PlayerJoinListener;
+import github.tyonakaisan.sukesuke.listener.*;
 import github.tyonakaisan.sukesuke.manager.ArmorManager;
 import github.tyonakaisan.sukesuke.packet.OthersPacketListener;
 import github.tyonakaisan.sukesuke.packet.SelfPacketListener;
@@ -32,7 +29,8 @@ private static Sukesuke sukesuke;
             ArmorChangeListener.class,
             GameModeChangeListener.class,
             PlayerArmSwingListener.class,
-            PlayerJoinListener.class
+            PlayerJoinListener.class,
+            InventoryCloseListener.class
     );
 
     private static final Set<Class<? extends SukesukeCommand>> COMMAND_CLASS = Set.of(

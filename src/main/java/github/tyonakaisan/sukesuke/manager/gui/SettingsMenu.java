@@ -85,17 +85,6 @@ public class SettingsMenu extends AbstractMenu {
                     .build())
             .lore(List.of(
                     Component.text()
-                            .append(Component.text("・特定の装備を着た際に"))
-                            .decoration(TextDecoration.ITALIC, false)
-                            .color(TextColor.fromCSSHexString("#dc143c"))
-                            .build(),
-                    Component.text()
-                            .append(Component.text("  ボタンのアイテム名、説明分が変わらない"))
-                            .decoration(TextDecoration.ITALIC, false)
-                            .color(TextColor.fromCSSHexString("#dc143c"))
-                            .build(),
-                    Component.text().build(),
-                    Component.text()
                             .append(Component.text("・皮のブーツを着ても粉雪の上を歩けない"))
                             .decoration(TextDecoration.ITALIC, false)
                             .color(TextColor.fromCSSHexString("#dc143c"))
@@ -232,28 +221,27 @@ public class SettingsMenu extends AbstractMenu {
                 //2段目
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("helmet", view.viewer().player()), context -> {
                     Keys.setToggleArmorType(view.viewer().player(), "helmet");
-                    armorPacketManager.sendPacket(viewerConvertPlayer(view.viewer()));
+                    armorPacketManager.sendPacket(view.viewer().player());
                 }), 1, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("chest", view.viewer().player()), context -> {
                     Keys.setToggleArmorType(view.viewer().player(), "chest");
-                    armorPacketManager.sendPacket(viewerConvertPlayer(view.viewer()));
+                    armorPacketManager.sendPacket(view.viewer().player());
                 }), 2, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("leggings", view.viewer().player()), context -> {
                     Keys.setToggleArmorType(view.viewer().player(), "leggings");
-                    armorPacketManager.sendPacket(viewerConvertPlayer(view.viewer()));
+                    armorPacketManager.sendPacket(view.viewer().player());
                 }), 3, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("boots", view.viewer().player()), context -> {
                     Keys.setToggleArmorType(view.viewer().player(), "boots");
-                    armorPacketManager.sendPacket(viewerConvertPlayer(view.viewer()));
+                    armorPacketManager.sendPacket(view.viewer().player());
                 }), 4, 1))
                 .addTransform(chestItem(ItemStackElement.of(help), 6, 1))
                 .addTransform(chestItem(ItemStackElement.of(bug), 7, 1))
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(close, context -> context.viewer().close()), 8, 1))
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(close, context -> {
+                    armorPacketManager.sendPacket(view.viewer().player());
+                    context.viewer().close();
+                }), 8, 1))
         .build();
-    }
-
-    public Player viewerConvertPlayer(PlayerViewer viewer) {
-        return server.getPlayer(viewer.player().getUniqueId());
     }
 
     public Transform<ChestPane, PlayerViewer> helmet() {
@@ -300,11 +288,11 @@ public class SettingsMenu extends AbstractMenu {
         };
     }
 
-    public ItemStack toggleItem(String Key, Player player) {
+    public ItemStack toggleItem(String key, Player player) {
         ItemBuilder.of(Material.BARRIER).build();
         ItemStack item;
 
-        if (Objects.requireNonNull(player.getPersistentDataContainer().get(new NamespacedKey(sukesuke, Key), PersistentDataType.STRING)).equalsIgnoreCase("true")) {
+        if (Objects.requireNonNull(player.getPersistentDataContainer().get(new NamespacedKey(sukesuke, key), PersistentDataType.STRING)).equalsIgnoreCase("true")) {
             item = toggleInVisible;
         } else {
             item = toggleVisible;

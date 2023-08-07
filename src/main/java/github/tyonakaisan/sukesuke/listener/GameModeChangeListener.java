@@ -28,16 +28,17 @@ public class GameModeChangeListener implements Listener {
     @EventHandler
     public void onGameModeChange(PlayerGameModeChangeEvent event) {
         Player player = event.getPlayer();
+
         if (event.getNewGameMode().equals(GameMode.CREATIVE)) {
-            //trueに強制戻し
-            player.getPersistentDataContainer().set(Keys.ToggleKey, PersistentDataType.STRING, "true");
-            Keys.setToggleArmorType(player, "toggle");
+            //強制false
+            player.getPersistentDataContainer().set(Keys.ToggleKey, PersistentDataType.STRING, "false");
             armorPacketManager.sendPacket(player);
         } else {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    Keys.setToggleArmorType(player, "toggle");
+                    //強制true
+                    player.getPersistentDataContainer().set(Keys.ToggleKey, PersistentDataType.STRING, "true");
                     armorPacketManager.sendPacket(player);
                 }
             }.runTaskLater(sukesuke, 1L);

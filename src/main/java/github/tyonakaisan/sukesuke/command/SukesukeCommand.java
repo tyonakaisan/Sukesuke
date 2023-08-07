@@ -1,4 +1,4 @@
-package github.tyonakaisan.sukesuke.commands;
+package github.tyonakaisan.sukesuke.command;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
 

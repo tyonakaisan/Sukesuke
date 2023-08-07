@@ -1,4 +1,4 @@
-package github.tyonakaisan.sukesuke.commands;
+package github.tyonakaisan.sukesuke.command;
 
 import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;

@@ -45,23 +45,25 @@ public class OthersPacketListener {
                         return;
                     }
 
+                    var ldc = livPlayer.getPersistentDataContainer();
+
                     List<Pair<EnumWrappers.ItemSlot, ItemStack>> pairList = packet.getSlotStackPairLists().read(0);
 
                     pairList.stream().filter(OthersPacketListener::isArmorSlot).forEach(slotPair -> {
                         //ヘルメット
-                        if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.HEAD) && Objects.requireNonNull(pdc.get(Keys.HelmetKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
+                        if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.HEAD) && Objects.requireNonNull(ldc.get(Keys.HelmetKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                             slotPair.setSecond(slotPair.getSecond().clone());
                         }
                         //チェスト
-                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.CHEST) && Objects.requireNonNull(pdc.get(Keys.ChestKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
+                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.CHEST) && Objects.requireNonNull(ldc.get(Keys.ChestKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                             slotPair.setSecond(slotPair.getSecond().clone());
                         }
                         //レギンス
-                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.LEGS) && Objects.requireNonNull(pdc.get(Keys.LeggingsKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
+                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.LEGS) && Objects.requireNonNull(ldc.get(Keys.LeggingsKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                             slotPair.setSecond(slotPair.getSecond().clone());
                         }
                         //ブーツ
-                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.FEET) && Objects.requireNonNull(pdc.get(Keys.BootsKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
+                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.FEET) && Objects.requireNonNull(ldc.get(Keys.BootsKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                             slotPair.setSecond(slotPair.getSecond().clone());
                         }
                         //エリトラ

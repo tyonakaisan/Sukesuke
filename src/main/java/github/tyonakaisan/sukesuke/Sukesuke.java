@@ -4,7 +4,9 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import github.tyonakaisan.sukesuke.commands.SukesukeCommand;
+import github.tyonakaisan.sukesuke.command.SukesukeCommand;
+import github.tyonakaisan.sukesuke.command.commands.GuiCommand;
+import github.tyonakaisan.sukesuke.command.commands.SukeCommand;
 import github.tyonakaisan.sukesuke.listener.ArmorChangeListener;
 import github.tyonakaisan.sukesuke.listener.GameModeChangeListener;
 import github.tyonakaisan.sukesuke.listener.PlayerArmSwingListener;
@@ -33,7 +35,10 @@ private static Sukesuke sukesuke;
             PlayerJoinListener.class
     );
 
-    private static final Set<Class<? extends SukesukeCommand>> COMMAND_CLASS = Set.of();
+    private static final Set<Class<? extends SukesukeCommand>> COMMAND_CLASS = Set.of(
+            SukeCommand.class,
+            GuiCommand.class
+    );
 
     private final Injector injector;
 
@@ -53,7 +58,6 @@ private static Sukesuke sukesuke;
         //manager
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
         ArmorManager armorManager = new ArmorManager();
-        //ArmorPacketManager armorPacketManager = new ArmorPacketManager(armorManager, protocolManager);
 
         // Commands
         for (final Class<? extends SukesukeCommand> commandClass : COMMAND_CLASS) {

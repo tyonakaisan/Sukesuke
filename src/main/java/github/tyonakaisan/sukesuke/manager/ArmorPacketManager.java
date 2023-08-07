@@ -16,7 +16,6 @@ import java.util.List;
 
 public class ArmorPacketManager {
     private final ArmorManager armorManager;
-    private final ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 
     @Inject
     public ArmorPacketManager(
@@ -31,6 +30,8 @@ public class ArmorPacketManager {
     }
 
     public void SelfPacket(Player player) {
+        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+
         PlayerInventory inventory = player.getInventory();
 
         for (int i = 5; i <= 8; i++) {
@@ -46,6 +47,8 @@ public class ArmorPacketManager {
     }
 
     public void OthersPacket(Player player) {
+        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+
         PlayerInventory inv = player.getInventory();
 
         PacketContainer packetOthers = protocolManager.createPacket(PacketType.Play.Server.ENTITY_EQUIPMENT);

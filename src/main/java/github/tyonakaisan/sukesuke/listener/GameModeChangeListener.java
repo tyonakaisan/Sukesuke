@@ -1,5 +1,6 @@
 package github.tyonakaisan.sukesuke.listener;
 
+import com.google.inject.Inject;
 import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
 import github.tyonakaisan.sukesuke.manager.Keys;
@@ -15,9 +16,13 @@ public class GameModeChangeListener implements Listener {
     private final Sukesuke sukesuke;
     private final ArmorPacketManager armorPacketManager;
 
-    public GameModeChangeListener(Sukesuke sk, ArmorPacketManager am){
-        this.sukesuke = sk;
-        this.armorPacketManager = am;
+    @Inject
+    public GameModeChangeListener(
+            Sukesuke sukesuke,
+            ArmorPacketManager armorPacketManager
+    ) {
+        this.sukesuke = sukesuke;
+        this.armorPacketManager = armorPacketManager;
     }
 
     @EventHandler

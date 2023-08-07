@@ -66,7 +66,7 @@ public class OthersPacketListener {
                         }
                         //エリトラ
                         else if (slotPair.getSecond().getType().equals(Material.ELYTRA) && livPlayer.isGliding()) {
-                            slotPair.setSecond(armorManager.HideArmor(slotPair.getSecond().clone()));
+                            slotPair.setSecond(armorManager.hideArmor(slotPair.getSecond().clone()));
                         }
                         //透明
                         else {

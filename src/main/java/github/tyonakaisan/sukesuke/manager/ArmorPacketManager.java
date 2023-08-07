@@ -1,10 +1,12 @@
 package github.tyonakaisan.sukesuke.manager;
 
 import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
+import com.google.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -14,11 +16,13 @@ import java.util.List;
 
 public class ArmorPacketManager {
     private final ArmorManager armorManager;
-    private final ProtocolManager protocolManager;
+    private final ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 
-    public ArmorPacketManager(ArmorManager am, ProtocolManager pm) {
-        this.armorManager = am;
-        this.protocolManager = pm;
+    @Inject
+    public ArmorPacketManager(
+            ArmorManager armorManager
+    ) {
+        this.armorManager = armorManager;
     }
 
     public void sendPacket(Player player) {

@@ -1,44 +1,34 @@
 package github.tyonakaisan.sukesuke.manager;
 
+import github.tyonakaisan.sukesuke.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.Formatter;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.awt.*;
 import java.util.List;
+
+import static github.tyonakaisan.sukesuke.utils.ColorUtils.getGradientColor;
 
 
 public class ArmorManager {
-    public ItemStack HideArmor(ItemStack itemStack) {
+    public ItemStack hideArmor(ItemStack itemStack) {
         if (itemStack.getType().equals(Material.AIR)) return itemStack;
 
-        //meta
-        ItemMeta itemMeta = itemStack.getItemMeta().clone();
+        var durability = getItemDurability(itemStack);
 
-        //アイテム名
-        itemMeta.displayName(Component.text()
-                .append(Component.text("すけすけ"))
-                .decoration(TextDecoration.BOLD, true)
-                .decoration(TextDecoration.ITALIC, false)
-                .color(TextColor.fromCSSHexString("#00fa9a"))
-                .build());
-
-        //説明ぶん
-        itemMeta.lore(List.of(Component.text().build(),
-                getItemDurability(itemStack),
-                Component.text().build(),
-                Component.text()
-                        .append(Component.text("非表示中!"))
-                        .decoration(TextDecoration.BOLD, true)
-                        .decoration(TextDecoration.ITALIC, false)
-                        .color(TextColor.color(NamedTextColor.GRAY))
-                        .build()));
+        var displayName = MiniMessage.miniMessage().deserialize("<item_name>",
+                Placeholder.component("item_name", getDisplayName(itemStack))
+        );
 
         //エリトラの場合はそのまま返す
         if (itemStack.getType().equals(Material.ELYTRA)) {
@@ -46,60 +36,55 @@ public class ArmorManager {
         }
         //それ以外はボタンに
         else {
-            itemStack.setType(Material.CONDUIT);
+            itemStack.setType(buttonMaterial(itemStack));
         }
-        //おまけのカスタムモデルデータ
-        itemMeta.setCustomModelData(1);
 
-        itemStack.setItemMeta(itemMeta);
-
-        System.out.println(itemMeta);
-        System.out.println(itemStack.setItemMeta(itemMeta));
-        System.out.println(itemStack);
-        return itemStack;
+        return ItemBuilder.of(itemStack)
+                .customModelData(1)
+                .displayName(displayName)
+                .lore(List.of(Component.empty(),
+                        durability,
+                        Component.text()
+                                .append(Component.text("非表示中!"))
+                                .decoration(TextDecoration.BOLD, true)
+                                .decoration(TextDecoration.ITALIC, false)
+                                .color(TextColor.color(NamedTextColor.GRAY))
+                                .build()))
+                .build();
     }
 
     public Component getItemDurability(ItemStack itemStack) {
         Damageable damageMeta = (Damageable) itemStack.getItemMeta();
 
-        double MaxDurability = itemStack.getType().getMaxDurability();
-        double currentDurability = MaxDurability - damageMeta.getDamage();
-        double percentage = (100 - (damageMeta.getDamage() * 100 / MaxDurability)) / 100;
+        double maxDurability = itemStack.getType().getMaxDurability();
+        int currentDurability = (int) (maxDurability - damageMeta.getDamage());
+        double percentage = (100 - (damageMeta.getDamage() * 100 / maxDurability)) / 100;
 
         if (Double.isNaN(percentage)) {
-            return Component.text().build();
+            return Component.empty();
         }
 
-        return Component.text()
-                .append(Component.text("耐久値 : "))
-                .append(Component.text()
-                        .content(String.valueOf(currentDurability))
-                        .color(TextColor.fromCSSHexString(getGradientColor(percentage, "#56ab2f", "#dd3e54")))
-                        .build())
-                .append(Component.text("/"))
-                .append(Component.text(MaxDurability))
-                .decoration(TextDecoration.ITALIC, false)
-                .color(TextColor.color(NamedTextColor.WHITE))
-                .build();
+        return MiniMessage.miniMessage().deserialize("<color:white>耐久値 : <durability_color><current></durability_color>/<max></color>",
+                TagResolver.resolver("durability_color", Tag.styling(getGradientColor(percentage, "#00ff00", "#ff0000"))),
+                Formatter.number("current", currentDurability),
+                Formatter.number("max", (int) maxDurability)
+                );
     }
 
-    public static String getGradientColor(double percentage, String startColor, String endColor) {
-        Color start = Color.decode(startColor);
-        Color end = Color.decode(endColor);
-
-        int red = (int) (end.getRed() + percentage * (start.getRed() - end.getRed()));
-        int green = (int) (end.getGreen() + percentage * (start.getGreen() - end.getGreen()));
-        int blue = (int) (end.getBlue() + percentage * (start.getBlue() - end.getBlue()));
-
-        return String.format("#%02x%02x%02x", red, green, blue);
+    private Component getDisplayName(ItemStack itemStack) {
+        if (itemStack.getItemMeta().hasDisplayName()) {
+            return itemStack.getItemMeta().displayName();
+        } else {
+            return Component.translatable(itemStack.translationKey(), Component.empty());
+        }
     }
 
-    public Material ButtonMaterial(ItemStack itemStack) {
+    private Material buttonMaterial(ItemStack itemStack) {
         Damageable damageMeta = (Damageable) itemStack.getItemMeta();
-        int MaxDurability = itemStack.getType().getMaxDurability();
-        if (MaxDurability == 0) return Material.BIRCH_BUTTON;
+        int maxDurability = itemStack.getType().getMaxDurability();
+        if (maxDurability == 0) return Material.BIRCH_BUTTON;
 
-        int percentage = 100 - (damageMeta.getDamage() * 100 / MaxDurability);
+        int percentage = 100 - (damageMeta.getDamage() * 100 / maxDurability);
 
         if (percentage >= 67) {
             return Material.POLISHED_BLACKSTONE_BUTTON;
@@ -133,6 +118,9 @@ public class ArmorManager {
                 if(inv.getBoots() != null) {
                     return inv.getBoots().clone();
                 }
+            }
+            default -> {
+                return new ItemStack(Material.AIR);
             }
         }
         return new ItemStack(Material.AIR);

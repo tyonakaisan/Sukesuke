@@ -6,6 +6,7 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.reflect.StructureModifier;
 import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorManager;
 import github.tyonakaisan.sukesuke.manager.Keys;
@@ -45,20 +46,21 @@ public class SelfPacketListener {
                     if (packet.getType().equals(PacketType.Play.Server.SET_SLOT) && packet.getIntegers().read(0).equals(0) && packet.getIntegers().read(2) > 4 && packet.getIntegers().read(2) < 9) {
                         switch (packet.getIntegers().read(2)) {
                             case 5 -> {
-                                ItemStack itemStack = packet.getItemModifier().read(0);
-                                System.out.println(itemStack);
+                                StructureModifier<ItemStack> itemModifier = packet.getItemModifier();
+                                ItemStack itemStack = itemModifier.read(0);
 
                                 //false(表示)だったら
                                 if (Objects.requireNonNull(pdc.get(Keys.HelmetKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
-                                    packet.getItemModifier().write(0, itemStack);
+                                    itemModifier.write(0, itemStack);
                                 }
 
                                 //true(非表示)だったら
                                 else {
-                                    packet.getItemModifier().write(0, armorManager.HideArmor(itemStack));
+                                    itemModifier.write(0, armorManager.hideArmor(itemStack));
                                 }
                             }
                             case 6 -> {
+                                StructureModifier<ItemStack> itemModifier = event.getPacket().getItemModifier();
                                 ItemStack itemStack = packet.getItemModifier().read(0);
 
                                 //false(表示)だったら
@@ -68,10 +70,11 @@ public class SelfPacketListener {
 
                                 //true(非表示)だったら
                                 else {
-                                    packet.getItemModifier().write(0, armorManager.HideArmor(itemStack));
+                                    packet.getItemModifier().write(0, armorManager.hideArmor(itemStack));
                                 }
                             }
                             case 7 -> {
+                                StructureModifier<ItemStack> itemModifier = event.getPacket().getItemModifier();
                                 ItemStack itemStack = packet.getItemModifier().read(0);
 
                                 //false(表示)だったら
@@ -81,10 +84,11 @@ public class SelfPacketListener {
 
                                 //true(非表示)だったら
                                 else {
-                                    packet.getItemModifier().write(0, armorManager.HideArmor(itemStack));
+                                    packet.getItemModifier().write(0, armorManager.hideArmor(itemStack));
                                 }
                             }
                             case 8 -> {
+                                StructureModifier<ItemStack> itemModifier = event.getPacket().getItemModifier();
                                 ItemStack itemStack = packet.getItemModifier().read(0);
 
                                 //false(表示)だったら
@@ -94,7 +98,7 @@ public class SelfPacketListener {
 
                                 //true(非表示)だったら
                                 else {
-                                    packet.getItemModifier().write(0, armorManager.HideArmor(itemStack));
+                                    packet.getItemModifier().write(0, armorManager.hideArmor(itemStack));
                                 }
                             }
                         }
@@ -105,19 +109,19 @@ public class SelfPacketListener {
 
                         if (Objects.requireNonNull(pdc.get(Keys.HelmetKey, PersistentDataType.STRING)).equalsIgnoreCase("true")) {
                             ItemStack armor = itemStacks.get(5);
-                            armor.setItemMeta(armorManager.HideArmor(armor).getItemMeta());
+                            armor.setItemMeta(armorManager.hideArmor(armor).getItemMeta());
                         }
                         if (Objects.requireNonNull(pdc.get(Keys.ChestKey, PersistentDataType.STRING)).equalsIgnoreCase("true")) {
                             ItemStack armor = itemStacks.get(6);
-                            armor.setItemMeta(armorManager.HideArmor(armor).getItemMeta());
+                            armor.setItemMeta(armorManager.hideArmor(armor).getItemMeta());
                         }
                         if (Objects.requireNonNull(pdc.get(Keys.LeggingsKey, PersistentDataType.STRING)).equalsIgnoreCase("true")) {
                             ItemStack armor = itemStacks.get(7);
-                            armor.setItemMeta(armorManager.HideArmor(armor).getItemMeta());
+                            armor.setItemMeta(armorManager.hideArmor(armor).getItemMeta());
                         }
                         if (Objects.requireNonNull(pdc.get(Keys.BootsKey, PersistentDataType.STRING)).equalsIgnoreCase("true")) {
                             ItemStack armor = itemStacks.get(8);
-                            armor.setItemMeta(armorManager.HideArmor(armor).getItemMeta());
+                            armor.setItemMeta(armorManager.hideArmor(armor).getItemMeta());
                         }
                     }
 

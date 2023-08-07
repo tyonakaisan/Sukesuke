@@ -1,5 +1,6 @@
 package github.tyonakaisan.sukesuke.listener;
 
+import com.google.inject.Inject;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
 import github.tyonakaisan.sukesuke.manager.Keys;
 import org.bukkit.entity.Player;
@@ -13,8 +14,11 @@ import java.util.Objects;
 public class PlayerJoinListener implements Listener {
     private final ArmorPacketManager armorPacketManager;
 
-    public PlayerJoinListener(ArmorPacketManager am) {
-        this.armorPacketManager = am;
+    @Inject
+    public PlayerJoinListener(
+            ArmorPacketManager armorPacketManager
+    ) {
+        this.armorPacketManager = armorPacketManager;
     }
 
     @EventHandler

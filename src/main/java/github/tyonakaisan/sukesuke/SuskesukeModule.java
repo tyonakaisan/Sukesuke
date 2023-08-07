@@ -55,7 +55,6 @@ public final class SuskesukeModule extends AbstractModule {
         this.bind(ComponentLogger.class).toInstance(this.logger);
         this.bind(Sukesuke.class).toInstance(this.sukesuke);
         this.bind(Server.class).toInstance(this.sukesuke.getServer());
-        this.bind(Server.class).toInstance(this.sukesuke.getServer());
         this.bind(Path.class).toInstance(this.dataDirectory);
     }
 }

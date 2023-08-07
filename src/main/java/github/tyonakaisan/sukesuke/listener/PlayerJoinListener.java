@@ -2,7 +2,7 @@ package github.tyonakaisan.sukesuke.listener;
 
 import com.google.inject.Inject;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
-import github.tyonakaisan.sukesuke.manager.Keys;
+import github.tyonakaisan.sukesuke.manager.SukesukeKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,22 +16,25 @@ import java.util.Objects;
 @DefaultQualifier(NonNull.class)
 public final class PlayerJoinListener implements Listener {
     private final ArmorPacketManager armorPacketManager;
+    private final SukesukeKey sukesukeKey;
 
     @Inject
     public PlayerJoinListener(
-            ArmorPacketManager armorPacketManager
+            ArmorPacketManager armorPacketManager,
+            SukesukeKey sukesukeKey
     ) {
         this.armorPacketManager = armorPacketManager;
+        this.sukesukeKey= sukesukeKey;
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        Keys.setHideArmorKey(player);
+        sukesukeKey.setHideArmorKeys(player);
 
         if (player.hasPermission("sukesuke.suke")
-                && Objects.requireNonNull(player.getPersistentDataContainer().get(Keys.ToggleKey, PersistentDataType.STRING)).equalsIgnoreCase("true")) {
+                && Objects.requireNonNull(player.getPersistentDataContainer().get(sukesukeKey.toggle(), PersistentDataType.STRING)).equalsIgnoreCase("true")) {
             armorPacketManager.sendPacket(player);
         }
     }

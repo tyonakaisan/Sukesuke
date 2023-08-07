@@ -4,7 +4,7 @@ import cloud.commandframework.CommandManager;
 import com.google.inject.Inject;
 import github.tyonakaisan.sukesuke.command.SukesukeCommand;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
-import github.tyonakaisan.sukesuke.manager.Keys;
+import github.tyonakaisan.sukesuke.manager.SukesukeKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -21,14 +21,17 @@ public final class SukeCommand implements SukesukeCommand {
 
     private final ArmorPacketManager armorPacketManager;
     private final CommandManager<CommandSender> commandManager;
+    private final SukesukeKey sukesukeKey;
 
     @Inject
     SukeCommand(
             ArmorPacketManager armorPacketManager,
-            CommandManager<CommandSender> commandManager
+            CommandManager<CommandSender> commandManager,
+            SukesukeKey sukesukeKey
     ) {
         this.armorPacketManager = armorPacketManager;
         this.commandManager = commandManager;
+        this.sukesukeKey = sukesukeKey;
     }
 
     @Override
@@ -39,13 +42,13 @@ public final class SukeCommand implements SukesukeCommand {
                     final var sender = (Player) handler.getSender();
 
                     //toggleKeyチェック
-                    if (!sender.getPersistentDataContainer().has(Keys.ToggleKey)) {
-                        Keys.setHideArmorKey(sender);
+                    if (!sender.getPersistentDataContainer().has(sukesukeKey.toggle())) {
+                        sukesukeKey.setHideArmorKeys(sender);
                     }
-                    Keys.setToggleArmorType(sender, "toggle");
+                    sukesukeKey.setToggleArmorType(sender, sukesukeKey.toggle());
                     armorPacketManager.sendPacket(sender);
                     //actionbar
-                    String isToggle = Objects.requireNonNull(sender.getPersistentDataContainer().get(Keys.ToggleKey, PersistentDataType.STRING));
+                    String isToggle = Objects.requireNonNull(sender.getPersistentDataContainer().get(sukesukeKey.toggle(), PersistentDataType.STRING));
                     Component toggle;
 
                     if (Objects.requireNonNull(isToggle).equalsIgnoreCase("true")) {

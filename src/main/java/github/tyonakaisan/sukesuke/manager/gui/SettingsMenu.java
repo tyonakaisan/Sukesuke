@@ -3,7 +3,7 @@ package github.tyonakaisan.sukesuke.manager.gui;
 import com.google.inject.Inject;
 import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
-import github.tyonakaisan.sukesuke.manager.Keys;
+import github.tyonakaisan.sukesuke.manager.SukesukeKey;
 import github.tyonakaisan.sukesuke.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -30,14 +30,17 @@ import java.util.Objects;
 public final class SettingsMenu extends AbstractMenu {
     private final Sukesuke sukesuke;
     private final ArmorPacketManager armorPacketManager;
+    private final SukesukeKey sukesukeKey;
 
     @Inject
     public SettingsMenu(
             Sukesuke sukesuke,
-            ArmorPacketManager armorPacketManager
+            ArmorPacketManager armorPacketManager,
+            SukesukeKey sukesukeKey
     ) {
         this.sukesuke = sukesuke;
         this.armorPacketManager = armorPacketManager;
+        this.sukesukeKey = sukesukeKey;
     }
 
     private static final ItemStack help = ItemBuilder.of(Material.LIGHT)
@@ -219,19 +222,19 @@ public final class SettingsMenu extends AbstractMenu {
                 .addTransform(boots())
                 //2段目
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("helmet", view.viewer().player()), context -> {
-                    Keys.setToggleArmorType(view.viewer().player(), "helmet");
+                    sukesukeKey.setToggleArmorType(view.viewer().player(), sukesukeKey.helmet());
                     armorPacketManager.sendPacket(view.viewer().player());
                 }), 1, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("chest", view.viewer().player()), context -> {
-                    Keys.setToggleArmorType(view.viewer().player(), "chest");
+                    sukesukeKey.setToggleArmorType(view.viewer().player(), sukesukeKey.chest());
                     armorPacketManager.sendPacket(view.viewer().player());
                 }), 2, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("leggings", view.viewer().player()), context -> {
-                    Keys.setToggleArmorType(view.viewer().player(), "leggings");
+                    sukesukeKey.setToggleArmorType(view.viewer().player(), sukesukeKey.leggings());
                     armorPacketManager.sendPacket(view.viewer().player());
                 }), 3, 1))
                 .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("boots", view.viewer().player()), context -> {
-                    Keys.setToggleArmorType(view.viewer().player(), "boots");
+                    sukesukeKey.setToggleArmorType(view.viewer().player(), sukesukeKey.boots());
                     armorPacketManager.sendPacket(view.viewer().player());
                 }), 4, 1))
                 .addTransform(chestItem(ItemStackElement.of(help), 6, 1))

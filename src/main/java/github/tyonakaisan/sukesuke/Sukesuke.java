@@ -1,7 +1,5 @@
 package github.tyonakaisan.sukesuke;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import github.tyonakaisan.sukesuke.command.SukesukeCommand;
@@ -9,6 +7,7 @@ import github.tyonakaisan.sukesuke.command.commands.GuiCommand;
 import github.tyonakaisan.sukesuke.command.commands.SukeCommand;
 import github.tyonakaisan.sukesuke.listener.*;
 import github.tyonakaisan.sukesuke.manager.ArmorManager;
+import github.tyonakaisan.sukesuke.manager.SukesukeKey;
 import github.tyonakaisan.sukesuke.packet.OthersPacketListener;
 import github.tyonakaisan.sukesuke.packet.SelfPacketListener;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
@@ -23,7 +22,6 @@ import java.util.Set;
 
 @DefaultQualifier(NonNull.class)
 public final class Sukesuke extends JavaPlugin {
-private static Sukesuke sukesuke;
 
     private static final Set<Class<? extends Listener>> LISTENER_CLASSES = Set.of(
             ArmorChangeListener.class,
@@ -50,12 +48,11 @@ private static Sukesuke sukesuke;
     @Override
     public void onEnable() {
         // Plugin startup logic
-        sukesuke = this;
         PaperInterfaceListeners.install(this);
 
         //manager
-        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
         ArmorManager armorManager = new ArmorManager();
+        SukesukeKey sukesukeKey = new SukesukeKey(this);
 
         // Commands
         for (final Class<? extends SukesukeCommand> commandClass : COMMAND_CLASS) {
@@ -64,8 +61,8 @@ private static Sukesuke sukesuke;
         }
 
         //packet
-        new SelfPacketListener(this, protocolManager, armorManager);
-        new OthersPacketListener(this, protocolManager, armorManager);
+        new SelfPacketListener(this, sukesukeKey, armorManager);
+        new OthersPacketListener(this, sukesukeKey, armorManager);
 
         // Listeners
         for (final Class<? extends Listener> listenerClass : LISTENER_CLASSES) {
@@ -78,9 +75,5 @@ private static Sukesuke sukesuke;
     public void onDisable() {
         // Plugin shutdown logic
         //あ
-    }
-
-    public static Sukesuke getPlugin() {
-        return sukesuke;
     }
 }

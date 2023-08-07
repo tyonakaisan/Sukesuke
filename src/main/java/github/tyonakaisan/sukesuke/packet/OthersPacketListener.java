@@ -1,6 +1,7 @@
 package github.tyonakaisan.sukesuke.packet;
 
 import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
@@ -9,7 +10,7 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
 import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorManager;
-import github.tyonakaisan.sukesuke.manager.Keys;
+import github.tyonakaisan.sukesuke.manager.SukesukeKey;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -23,9 +24,25 @@ import java.util.List;
 import java.util.Objects;
 
 @DefaultQualifier(NonNull.class)
-public final class OthersPacketListener {
+public final class OthersPacketListener{
+    private final Sukesuke sukesuke;
+    private final SukesukeKey sukesukeKey;
+    private final ArmorManager armorManager;
 
-    public OthersPacketListener(Sukesuke sukesuke, ProtocolManager protocolManager, ArmorManager armorManager) {
+    public OthersPacketListener(
+            Sukesuke sukesuke,
+            SukesukeKey sukesukeKey,
+            ArmorManager armorManager
+    ) {
+        this.sukesuke = sukesuke;
+        this.sukesukeKey = sukesukeKey;
+        this.armorManager = armorManager;
+
+        othersPacketListener();
+    }
+
+    public void othersPacketListener() {
+        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
         protocolManager.addPacketListener(new PacketAdapter(sukesuke, PacketType.Play.Server.ENTITY_EQUIPMENT) {
             @Override
             public void onPacketSending(PacketEvent event) {
@@ -33,8 +50,8 @@ public final class OthersPacketListener {
                 Player player = event.getPlayer();
                 var pdc = player.getPersistentDataContainer();
                 //もりぱぱっち
-                if (!pdc.has(Keys.ToggleKey)) {
-                    Keys.setHideArmorKey(player);
+                if (!pdc.has(sukesukeKey.toggle())) {
+                    sukesukeKey.setHideArmorKeys(player);
                 }
 
                 LivingEntity livingEntity = (LivingEntity) protocolManager.getEntityFromID(player.getWorld(), packet.getIntegers().read(0));
@@ -43,7 +60,7 @@ public final class OthersPacketListener {
                 //パーミッションチェック
                 if (livPlayer.hasPermission("sukesuke.suke")) {
                     //toggle = falseであれば or Creativeモード であれば返す
-                    if (Objects.requireNonNull(ldc.get(Keys.ToggleKey, PersistentDataType.STRING)).equalsIgnoreCase("false")
+                    if (Objects.requireNonNull(ldc.get(sukesukeKey.toggle(), PersistentDataType.STRING)).equalsIgnoreCase("false")
                             || livPlayer.getGameMode().equals(GameMode.CREATIVE)) {
                         return;
                     }
@@ -52,19 +69,19 @@ public final class OthersPacketListener {
 
                     pairList.stream().filter(OthersPacketListener::isArmorSlot).forEach(slotPair -> {
                         //ヘルメット
-                        if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.HEAD) && Objects.requireNonNull(ldc.get(Keys.HelmetKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
+                        if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.HEAD) && Objects.requireNonNull(ldc.get(sukesukeKey.helmet(), PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                             slotPair.setSecond(slotPair.getSecond().clone());
                         }
                         //チェスト
-                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.CHEST) && Objects.requireNonNull(ldc.get(Keys.ChestKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
+                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.CHEST) && Objects.requireNonNull(ldc.get(sukesukeKey.chest(), PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                             slotPair.setSecond(slotPair.getSecond().clone());
                         }
                         //レギンス
-                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.LEGS) && Objects.requireNonNull(ldc.get(Keys.LeggingsKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
+                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.LEGS) && Objects.requireNonNull(ldc.get(sukesukeKey.leggings(), PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                             slotPair.setSecond(slotPair.getSecond().clone());
                         }
                         //ブーツ
-                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.FEET) && Objects.requireNonNull(ldc.get(Keys.BootsKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
+                        else if (slotPair.getFirst().equals(EnumWrappers.ItemSlot.FEET) && Objects.requireNonNull(ldc.get(sukesukeKey.boots(), PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                             slotPair.setSecond(slotPair.getSecond().clone());
                         }
                         //エリトラ

@@ -3,7 +3,7 @@ package github.tyonakaisan.sukesuke.listener;
 import com.google.inject.Inject;
 import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
-import github.tyonakaisan.sukesuke.manager.Keys;
+import github.tyonakaisan.sukesuke.manager.SukesukeKey;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,14 +17,17 @@ import org.checkerframework.framework.qual.DefaultQualifier;
 @DefaultQualifier(NonNull.class)
 public final class GameModeChangeListener implements Listener {
     private final Sukesuke sukesuke;
+    private final SukesukeKey sukesukeKey;
     private final ArmorPacketManager armorPacketManager;
 
     @Inject
     public GameModeChangeListener(
             Sukesuke sukesuke,
+            SukesukeKey sukesukeKey,
             ArmorPacketManager armorPacketManager
     ) {
         this.sukesuke = sukesuke;
+        this.sukesukeKey = sukesukeKey;
         this.armorPacketManager = armorPacketManager;
     }
 
@@ -34,14 +37,14 @@ public final class GameModeChangeListener implements Listener {
 
         if (event.getNewGameMode().equals(GameMode.CREATIVE)) {
             //強制false
-            player.getPersistentDataContainer().set(Keys.ToggleKey, PersistentDataType.STRING, "false");
+            player.getPersistentDataContainer().set(sukesukeKey.toggle(), PersistentDataType.STRING, "false");
             armorPacketManager.sendPacket(player);
         } else {
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     //強制true
-                    player.getPersistentDataContainer().set(Keys.ToggleKey, PersistentDataType.STRING, "true");
+                    player.getPersistentDataContainer().set(sukesukeKey.toggle(), PersistentDataType.STRING, "true");
                     armorPacketManager.sendPacket(player);
                 }
             }.runTaskLater(sukesuke, 1L);

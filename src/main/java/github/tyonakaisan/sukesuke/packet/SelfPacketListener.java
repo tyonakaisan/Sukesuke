@@ -1,6 +1,7 @@
 package github.tyonakaisan.sukesuke.packet;
 
 import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
@@ -9,7 +10,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorManager;
-import github.tyonakaisan.sukesuke.manager.Keys;
+import github.tyonakaisan.sukesuke.manager.SukesukeKey;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +24,13 @@ import java.util.Objects;
 @DefaultQualifier(NonNull.class)
 public final class SelfPacketListener {
 
-    public SelfPacketListener(Sukesuke sukesuke, ProtocolManager protocolManager, ArmorManager armorManager) {
+    public SelfPacketListener(
+            Sukesuke sukesuke,
+            SukesukeKey sukesukeKey,
+            ArmorManager armorManager
+    ) {
+        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+
         PacketAdapter.AdapterParameteters params = PacketAdapter.params().plugin(sukesuke)
                 .listenerPriority(ListenerPriority.HIGH)
                 .types(PacketType.Play.Server.SET_SLOT, PacketType.Play.Server.WINDOW_ITEMS);
@@ -35,14 +42,14 @@ public final class SelfPacketListener {
                 Player player = event.getPlayer();
                 var pdc = player.getPersistentDataContainer();
                 //もりぱぱっち
-                if (!pdc.has(Keys.ToggleKey)) {
-                    Keys.setHideArmorKey(player);
+                if (!pdc.has(sukesukeKey.toggle())) {
+                    sukesukeKey.setHideArmorKeys(player);
                 }
 
                 //パーミッションチェック
                 if (player.hasPermission("sukesuke.suke")) {
                     //self_toggle = falseであれば or Creativeモード であれば返す
-                    if (Objects.requireNonNull(pdc.get(Keys.ToggleKey, PersistentDataType.STRING)).equalsIgnoreCase("false")
+                    if (Objects.requireNonNull(pdc.get(sukesukeKey.toggle(), PersistentDataType.STRING)).equalsIgnoreCase("false")
                             || player.getGameMode().equals(GameMode.CREATIVE)) return;
 
                     //SET_SLOT
@@ -53,7 +60,7 @@ public final class SelfPacketListener {
                                 ItemStack itemStack = itemModifier.read(0);
 
                                 //false(表示)だったら
-                                if (Objects.requireNonNull(pdc.get(Keys.HelmetKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
+                                if (Objects.requireNonNull(pdc.get(sukesukeKey.helmet(), PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                                     itemModifier.write(0, itemStack);
                                 }
 
@@ -66,7 +73,7 @@ public final class SelfPacketListener {
                                 ItemStack itemStack = packet.getItemModifier().read(0);
 
                                 //false(表示)だったら
-                                if (Objects.requireNonNull(pdc.get(Keys.ChestKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
+                                if (Objects.requireNonNull(pdc.get(sukesukeKey.chest(), PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                                     packet.getItemModifier().write(0, itemStack);
                                 }
 
@@ -79,7 +86,7 @@ public final class SelfPacketListener {
                                 ItemStack itemStack = packet.getItemModifier().read(0);
 
                                 //false(表示)だったら
-                                if (Objects.requireNonNull(pdc.get(Keys.LeggingsKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
+                                if (Objects.requireNonNull(pdc.get(sukesukeKey.leggings(), PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                                     packet.getItemModifier().write(0, itemStack);
                                 }
 
@@ -92,7 +99,7 @@ public final class SelfPacketListener {
                                 ItemStack itemStack = packet.getItemModifier().read(0);
 
                                 //false(表示)だったら
-                                if (Objects.requireNonNull(pdc.get(Keys.BootsKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) {
+                                if (Objects.requireNonNull(pdc.get(sukesukeKey.boots(), PersistentDataType.STRING)).equalsIgnoreCase("false")) {
                                     packet.getItemModifier().write(0, itemStack);
                                 }
 
@@ -107,19 +114,19 @@ public final class SelfPacketListener {
                     if (packet.getType().equals(PacketType.Play.Server.WINDOW_ITEMS) && packet.getIntegers().read(0).equals(0)) {
                         List<ItemStack> itemStacks = packet.getItemListModifier().read(0);
 
-                        if (Objects.requireNonNull(pdc.get(Keys.HelmetKey, PersistentDataType.STRING)).equalsIgnoreCase("true")) {
+                        if (Objects.requireNonNull(pdc.get(sukesukeKey.helmet(), PersistentDataType.STRING)).equalsIgnoreCase("true")) {
                             ItemStack armor = itemStacks.get(5);
                             armor.setItemMeta(armorManager.hideArmor(armor).getItemMeta());
                         }
-                        if (Objects.requireNonNull(pdc.get(Keys.ChestKey, PersistentDataType.STRING)).equalsIgnoreCase("true")) {
+                        if (Objects.requireNonNull(pdc.get(sukesukeKey.chest(), PersistentDataType.STRING)).equalsIgnoreCase("true")) {
                             ItemStack armor = itemStacks.get(6);
                             armor.setItemMeta(armorManager.hideArmor(armor).getItemMeta());
                         }
-                        if (Objects.requireNonNull(pdc.get(Keys.LeggingsKey, PersistentDataType.STRING)).equalsIgnoreCase("true")) {
+                        if (Objects.requireNonNull(pdc.get(sukesukeKey.leggings(), PersistentDataType.STRING)).equalsIgnoreCase("true")) {
                             ItemStack armor = itemStacks.get(7);
                             armor.setItemMeta(armorManager.hideArmor(armor).getItemMeta());
                         }
-                        if (Objects.requireNonNull(pdc.get(Keys.BootsKey, PersistentDataType.STRING)).equalsIgnoreCase("true")) {
+                        if (Objects.requireNonNull(pdc.get(sukesukeKey.boots(), PersistentDataType.STRING)).equalsIgnoreCase("true")) {
                             ItemStack armor = itemStacks.get(8);
                             armor.setItemMeta(armorManager.hideArmor(armor).getItemMeta());
                         }

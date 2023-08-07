@@ -4,7 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerArmorChangeEvent;
 import com.google.inject.Inject;
 import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
-import github.tyonakaisan.sukesuke.manager.Keys;
+import github.tyonakaisan.sukesuke.manager.SukesukeKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,14 +21,17 @@ import java.util.Objects;
 public final class ArmorChangeListener implements Listener {
     private final Sukesuke sukesuke;
     private final ArmorPacketManager armorPacketManager;
+    private final SukesukeKey sukesukeKey;
 
     @Inject
     public ArmorChangeListener(
             Sukesuke sukesuke,
-            ArmorPacketManager armorPacketManager
+            ArmorPacketManager armorPacketManager,
+            SukesukeKey sukesukeKey
     ) {
         this.sukesuke = sukesuke;
         this.armorPacketManager = armorPacketManager;
+        this.sukesukeKey = sukesukeKey;
     }
 
     @EventHandler
@@ -38,10 +41,10 @@ public final class ArmorChangeListener implements Listener {
         var pdc = player.getPersistentDataContainer();
         //もりぱぱっち
         //toggleKeyチェック
-        if (!player.getPersistentDataContainer().has(Keys.ToggleKey)) {
-            Keys.setHideArmorKey(player);
+        if (!player.getPersistentDataContainer().has(sukesukeKey.toggle())) {
+            sukesukeKey.setHideArmorKeys(player);
         }
-        if (Objects.requireNonNull(pdc.get(Keys.ToggleKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) return;
+        if (Objects.requireNonNull(pdc.get(sukesukeKey.toggle(), PersistentDataType.STRING)).equalsIgnoreCase("false")) return;
         if (newArmor == null) return;
 
         armorPacketManager.sendPacket(player);
@@ -53,8 +56,8 @@ public final class ArmorChangeListener implements Listener {
         if(!(event.getEntity() instanceof Player player)) return;
         var pdc = player.getPersistentDataContainer();
         //もりぱぱっち
-        if (!pdc.has(Keys.ToggleKey)) return;
-        if (Objects.requireNonNull(player.getPersistentDataContainer().get(Keys.ToggleKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) return;
+        if (!pdc.has(sukesukeKey.toggle())) return;
+        if (Objects.requireNonNull(player.getPersistentDataContainer().get(sukesukeKey.toggle(), PersistentDataType.STRING)).equalsIgnoreCase("false")) return;
 
         new BukkitRunnable() {
             @Override

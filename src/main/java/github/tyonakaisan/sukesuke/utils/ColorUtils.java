@@ -7,7 +7,7 @@ import org.checkerframework.framework.qual.DefaultQualifier;
 import java.awt.*;
 
 @DefaultQualifier(NonNull.class)
-public class ColorUtils {
+public final class ColorUtils {
 
     public static TextColor getGradientColor(double percentage, String startColor, String endColor) {
         Color start = Color.decode(startColor);

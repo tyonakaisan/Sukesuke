@@ -6,10 +6,13 @@ import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
 import java.util.Objects;
 
-public class Keys {
+@DefaultQualifier(NonNull.class)
+public final class Keys {
 
     private static final Sukesuke sukesuke = Sukesuke.getPlugin();
 

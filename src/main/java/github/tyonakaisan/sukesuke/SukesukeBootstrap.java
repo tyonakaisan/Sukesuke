@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings({"UnstableApiUsage", "unused"})
 @DefaultQualifier(NonNull.class)
-public class SukesukeBootstrap implements PluginBootstrap {
+public final class SukesukeBootstrap implements PluginBootstrap {
 
     private @MonotonicNonNull Injector injector;
 

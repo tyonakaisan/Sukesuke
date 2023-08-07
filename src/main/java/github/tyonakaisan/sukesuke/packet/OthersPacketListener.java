@@ -16,11 +16,14 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
 import java.util.List;
 import java.util.Objects;
 
-public class OthersPacketListener {
+@DefaultQualifier(NonNull.class)
+public final class OthersPacketListener {
 
     public OthersPacketListener(Sukesuke sukesuke, ProtocolManager protocolManager, ArmorManager armorManager) {
         protocolManager.addPacketListener(new PacketAdapter(sukesuke, PacketType.Play.Server.ENTITY_EQUIPMENT) {

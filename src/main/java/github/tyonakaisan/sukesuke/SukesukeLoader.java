@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 
 @SuppressWarnings({"UnstableApiUsage", "unused"})
 @DefaultQualifier(NonNull.class)
-public class SukesukeLoader implements PluginLoader {
+public final class SukesukeLoader implements PluginLoader {
     @Override
     public void classloader(PluginClasspathBuilder classpathBuilder) {
         MavenLibraryResolver resolver = new MavenLibraryResolver();

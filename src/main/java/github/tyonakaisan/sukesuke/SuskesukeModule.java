@@ -16,7 +16,7 @@ import java.nio.file.Path;
 import java.util.function.Function;
 
 @DefaultQualifier(NonNull.class)
-public class SuskesukeModule extends AbstractModule {
+public final class SuskesukeModule extends AbstractModule {
     private final ComponentLogger logger;
     private final Sukesuke sukesuke;
     private final Path dataDirectory;

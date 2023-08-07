@@ -8,10 +8,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.persistence.PersistentDataType;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
 import java.util.Objects;
 
-public class InventoryCloseListener implements Listener {
+@DefaultQualifier(NonNull.class)
+public final class InventoryCloseListener implements Listener {
 
     private final ArmorPacketManager armorPacketManager;
 

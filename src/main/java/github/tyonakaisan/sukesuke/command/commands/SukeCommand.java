@@ -17,7 +17,7 @@ import org.checkerframework.framework.qual.DefaultQualifier;
 import java.util.Objects;
 
 @DefaultQualifier(NonNull.class)
-public class SukeCommand implements SukesukeCommand {
+public final class SukeCommand implements SukesukeCommand {
 
     private final ArmorPacketManager armorPacketManager;
     private final CommandManager<CommandSender> commandManager;

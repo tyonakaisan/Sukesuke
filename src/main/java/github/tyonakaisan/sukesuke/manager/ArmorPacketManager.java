@@ -11,10 +11,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
 import java.util.List;
 
-public class ArmorPacketManager {
+@DefaultQualifier(NonNull.class)
+public final class ArmorPacketManager {
     private final ArmorManager armorManager;
 
     @Inject

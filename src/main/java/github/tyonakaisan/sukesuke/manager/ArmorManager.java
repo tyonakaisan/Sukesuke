@@ -14,13 +14,15 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
 import java.util.List;
 
 import static github.tyonakaisan.sukesuke.utils.ColorUtils.getGradientColor;
 
-
-public class ArmorManager {
+@DefaultQualifier(NonNull.class)
+public final class ArmorManager {
     public ItemStack hideArmor(ItemStack itemStack) {
         if (itemStack.getType().equals(Material.AIR)) return itemStack;
 

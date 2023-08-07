@@ -11,8 +11,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
-public class GameModeChangeListener implements Listener {
+@DefaultQualifier(NonNull.class)
+public final class GameModeChangeListener implements Listener {
     private final Sukesuke sukesuke;
     private final ArmorPacketManager armorPacketManager;
 

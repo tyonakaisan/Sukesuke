@@ -11,10 +11,11 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 import org.incendo.interfaces.core.click.ClickHandler;
 import org.incendo.interfaces.core.transform.Transform;
 import org.incendo.interfaces.paper.PlayerViewer;
@@ -25,20 +26,18 @@ import org.incendo.interfaces.paper.type.ChestInterface;
 import java.util.List;
 import java.util.Objects;
 
-public class SettingsMenu extends AbstractMenu {
+@DefaultQualifier(NonNull.class)
+public final class SettingsMenu extends AbstractMenu {
     private final Sukesuke sukesuke;
     private final ArmorPacketManager armorPacketManager;
-    private final Server server;
 
     @Inject
     public SettingsMenu(
             Sukesuke sukesuke,
-            ArmorPacketManager armorPacketManager,
-            Server server
+            ArmorPacketManager armorPacketManager
     ) {
         this.sukesuke = sukesuke;
         this.armorPacketManager = armorPacketManager;
-        this.server = server;
     }
 
     private static final ItemStack help = ItemBuilder.of(Material.LIGHT)

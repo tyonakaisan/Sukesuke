@@ -12,10 +12,13 @@ import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
 import java.util.Objects;
 
-public class ArmorChangeListener implements Listener {
+@DefaultQualifier(NonNull.class)
+public final class ArmorChangeListener implements Listener {
     private final Sukesuke sukesuke;
     private final ArmorPacketManager armorPacketManager;
 

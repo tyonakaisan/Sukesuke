@@ -14,11 +14,14 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
 import java.util.List;
 import java.util.Objects;
 
-public class SelfPacketListener {
+@DefaultQualifier(NonNull.class)
+public final class SelfPacketListener {
 
     public SelfPacketListener(Sukesuke sukesuke, ProtocolManager protocolManager, ArmorManager armorManager) {
         PacketAdapter.AdapterParameteters params = PacketAdapter.params().plugin(sukesuke)
@@ -60,7 +63,6 @@ public class SelfPacketListener {
                                 }
                             }
                             case 6 -> {
-                                StructureModifier<ItemStack> itemModifier = event.getPacket().getItemModifier();
                                 ItemStack itemStack = packet.getItemModifier().read(0);
 
                                 //false(表示)だったら
@@ -74,7 +76,6 @@ public class SelfPacketListener {
                                 }
                             }
                             case 7 -> {
-                                StructureModifier<ItemStack> itemModifier = event.getPacket().getItemModifier();
                                 ItemStack itemStack = packet.getItemModifier().read(0);
 
                                 //false(表示)だったら
@@ -88,7 +89,6 @@ public class SelfPacketListener {
                                 }
                             }
                             case 8 -> {
-                                StructureModifier<ItemStack> itemModifier = event.getPacket().getItemModifier();
                                 ItemStack itemStack = packet.getItemModifier().read(0);
 
                                 //false(表示)だったら

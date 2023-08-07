@@ -8,10 +8,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.persistence.PersistentDataType;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
 import java.util.Objects;
 
-public class PlayerJoinListener implements Listener {
+@DefaultQualifier(NonNull.class)
+public final class PlayerJoinListener implements Listener {
     private final ArmorPacketManager armorPacketManager;
 
     @Inject

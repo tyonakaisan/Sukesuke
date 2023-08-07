@@ -24,11 +24,23 @@ import java.util.Objects;
 @DefaultQualifier(NonNull.class)
 public final class SelfPacketListener {
 
+    private final Sukesuke sukesuke;
+    private final SukesukeKey sukesukeKey;
+    private final ArmorManager armorManager;
+
     public SelfPacketListener(
             Sukesuke sukesuke,
             SukesukeKey sukesukeKey,
             ArmorManager armorManager
     ) {
+        this.sukesuke = sukesuke;
+        this.sukesukeKey = sukesukeKey;
+        this.armorManager = armorManager;
+
+        selfPacketListener();
+    }
+
+    public void selfPacketListener() {
         ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
 
         PacketAdapter.AdapterParameteters params = PacketAdapter.params().plugin(sukesuke)
@@ -135,6 +147,5 @@ public final class SelfPacketListener {
                 }
             }
         });
-
     }
 }

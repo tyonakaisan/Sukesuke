@@ -53,8 +53,6 @@ public class ArmorChangeListener implements Listener {
         if (!pdc.has(Keys.ToggleKey)) return;
         if (Objects.requireNonNull(player.getPersistentDataContainer().get(Keys.ToggleKey, PersistentDataType.STRING)).equalsIgnoreCase("false")) return;
 
-        player.sendRichMessage("a");
-
         new BukkitRunnable() {
             @Override
             public void run() {

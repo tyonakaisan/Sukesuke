@@ -1,8 +1,10 @@
 package github.tyonakaisan.sukesuke.manager.gui;
 
-import broccolai.corn.paper.item.PaperItemBuilder;
+import github.tyonakaisan.sukesuke.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 import org.incendo.interfaces.core.click.ClickContext;
 import org.incendo.interfaces.core.transform.Transform;
 import org.incendo.interfaces.paper.PlayerViewer;
@@ -13,10 +15,11 @@ import org.incendo.interfaces.paper.type.ChestInterface;
 
 import java.util.function.Supplier;
 
-abstract class AbstractMenu {
+@DefaultQualifier(NonNull.class)
+ abstract class AbstractMenu {
     protected final Transform<ChestPane, PlayerViewer> emptySlot = PaperTransform.chestFill(
-            ItemStackElement.of(PaperItemBuilder.ofType(Material.BLACK_STAINED_GLASS_PANE)
-                    .name(Component.text(""))
+            ItemStackElement.of(ItemBuilder.of(Material.BLACK_STAINED_GLASS_PANE)
+                    .displayName(Component.text(""))
                     .customModelData(1)
                     .build()));
 

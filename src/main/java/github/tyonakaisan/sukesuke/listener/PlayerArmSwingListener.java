@@ -1,20 +1,27 @@
 package github.tyonakaisan.sukesuke.listener;
 
+import com.google.inject.Inject;
 import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
 import io.papermc.paper.event.player.PlayerArmSwingEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.EquipmentSlot;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
 //無敵のmob等に攻撃した際に防具の透明化が解除されてしまう対策
 //パケットでやろうとしたけど上手く動作しなかったから代用
 
-public class PlayerArmSwingListener implements Listener {
+@DefaultQualifier(NonNull.class)
+public final class PlayerArmSwingListener implements Listener {
     private final ArmorPacketManager armorPacketManager;
 
-    public PlayerArmSwingListener(ArmorPacketManager am) {
-        this.armorPacketManager = am;
+    @Inject
+    public PlayerArmSwingListener(
+            ArmorPacketManager armorPacketManager
+    ) {
+        this.armorPacketManager = armorPacketManager;
     }
 
     @EventHandler

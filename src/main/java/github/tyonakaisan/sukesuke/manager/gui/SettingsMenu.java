@@ -1,8 +1,10 @@
 package github.tyonakaisan.sukesuke.manager.gui;
 
-import broccolai.corn.paper.item.PaperItemBuilder;
+import com.google.inject.Inject;
 import github.tyonakaisan.sukesuke.Sukesuke;
-import github.tyonakaisan.sukesuke.manager.Keys;
+import github.tyonakaisan.sukesuke.manager.ArmorPacketManager;
+import github.tyonakaisan.sukesuke.manager.SukesukeKey;
+import github.tyonakaisan.sukesuke.utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -12,6 +14,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 import org.incendo.interfaces.core.click.ClickHandler;
 import org.incendo.interfaces.core.transform.Transform;
 import org.incendo.interfaces.paper.PlayerViewer;
@@ -22,15 +26,25 @@ import org.incendo.interfaces.paper.type.ChestInterface;
 import java.util.List;
 import java.util.Objects;
 
-public class SettingsMenu extends AbstractMenu {
+@DefaultQualifier(NonNull.class)
+public final class SettingsMenu extends AbstractMenu {
     private final Sukesuke sukesuke;
+    private final ArmorPacketManager armorPacketManager;
+    private final SukesukeKey sukesukeKey;
 
-    public SettingsMenu(Sukesuke sukesuke) {
+    @Inject
+    public SettingsMenu(
+            Sukesuke sukesuke,
+            ArmorPacketManager armorPacketManager,
+            SukesukeKey sukesukeKey
+    ) {
         this.sukesuke = sukesuke;
+        this.armorPacketManager = armorPacketManager;
+        this.sukesukeKey = sukesukeKey;
     }
 
-    private static final ItemStack help = PaperItemBuilder.ofType(Material.LIGHT)
-            .name(Component.text()
+    private static final ItemStack help = ItemBuilder.of(Material.LIGHT)
+            .displayName(Component.text()
                     .append(Component.text("使い方"))
                     .decoration(TextDecoration.BOLD, true)
                     .decoration(TextDecoration.ITALIC, false)
@@ -64,25 +78,14 @@ public class SettingsMenu extends AbstractMenu {
                             .build()))
             .build();
 
-    private static final ItemStack bug = PaperItemBuilder.ofType(Material.PUFFERFISH_BUCKET)
-            .name(Component.text()
+    private static final ItemStack bug = ItemBuilder.of(Material.PUFFERFISH_BUCKET)
+            .displayName(Component.text()
                     .append(Component.text("既知のバグ等"))
                     .decoration(TextDecoration.BOLD, true)
                     .decoration(TextDecoration.ITALIC, false)
                     .color(TextColor.fromCSSHexString("#00fa9a"))
                     .build())
             .lore(List.of(
-                    Component.text()
-                            .append(Component.text("・特定の装備を着た際に"))
-                            .decoration(TextDecoration.ITALIC, false)
-                            .color(TextColor.fromCSSHexString("#dc143c"))
-                            .build(),
-                    Component.text()
-                            .append(Component.text("  ボタンのアイテム名、説明分が変わらない"))
-                            .decoration(TextDecoration.ITALIC, false)
-                            .color(TextColor.fromCSSHexString("#dc143c"))
-                            .build(),
-                    Component.text().build(),
                     Component.text()
                             .append(Component.text("・皮のブーツを着ても粉雪の上を歩けない"))
                             .decoration(TextDecoration.ITALIC, false)
@@ -95,8 +98,8 @@ public class SettingsMenu extends AbstractMenu {
                             .build()))
             .build();
 
-    private static final ItemStack helmet = PaperItemBuilder.ofType(Material.BARRIER)
-            .name(Component.text()
+    private static final ItemStack helmet = ItemBuilder.of(Material.BARRIER)
+            .displayName(Component.text()
                     .append(Component.text("ヘルメット"))
                     .decoration(TextDecoration.BOLD, true)
                     .decoration(TextDecoration.ITALIC, false)
@@ -109,8 +112,8 @@ public class SettingsMenu extends AbstractMenu {
                     .build()))
             .build();
 
-    private static final ItemStack chestplate = PaperItemBuilder.ofType(Material.BARRIER)
-            .name(Component.text()
+    private static final ItemStack chestplate = ItemBuilder.of(Material.BARRIER)
+            .displayName(Component.text()
                     .append(Component.text("チェストプレート"))
                     .decoration(TextDecoration.BOLD, true)
                     .decoration(TextDecoration.ITALIC, false)
@@ -123,8 +126,8 @@ public class SettingsMenu extends AbstractMenu {
                     .build()))
             .build();
 
-    private static final ItemStack leggings = PaperItemBuilder.ofType(Material.BARRIER)
-            .name(Component.text()
+    private static final ItemStack leggings = ItemBuilder.of(Material.BARRIER)
+            .displayName(Component.text()
                     .append(Component.text("レギンス"))
                     .decoration(TextDecoration.BOLD, true)
                     .decoration(TextDecoration.ITALIC, false)
@@ -137,8 +140,8 @@ public class SettingsMenu extends AbstractMenu {
                     .build()))
             .build();
 
-    private static final ItemStack boots = PaperItemBuilder.ofType(Material.BARRIER)
-            .name(Component.text()
+    private static final ItemStack boots = ItemBuilder.of(Material.BARRIER)
+            .displayName(Component.text()
                     .append(Component.text("ブーツ"))
                     .decoration(TextDecoration.BOLD, true)
                     .decoration(TextDecoration.ITALIC, false)
@@ -151,8 +154,8 @@ public class SettingsMenu extends AbstractMenu {
                     .build()))
             .build();
 
-    private static final ItemStack self_toggle = PaperItemBuilder.ofType(Material.ENDER_EYE)
-            .name(Component.text()
+    private static final ItemStack self_toggle = ItemBuilder.of(Material.ENDER_EYE)
+            .displayName(Component.text()
                     .append(Component.text("自分の装備の表示/非表示"))
                     .decoration(TextDecoration.BOLD, true)
                     .decoration(TextDecoration.ITALIC, false)
@@ -166,8 +169,8 @@ public class SettingsMenu extends AbstractMenu {
                         .build()))
             .build();
 
-    private static final ItemStack toggleInVisible = PaperItemBuilder.ofType(Material.GRAY_DYE)
-            .name(Component.text()
+    private static final ItemStack toggleInVisible = ItemBuilder.of(Material.GRAY_DYE)
+            .displayName(Component.text()
                     .append(Component.text("非表示中"))
                     .decoration(TextDecoration.BOLD, true)
                     .decoration(TextDecoration.ITALIC, false)
@@ -179,8 +182,8 @@ public class SettingsMenu extends AbstractMenu {
                     .build()))
             .build();
 
-    private static final ItemStack toggleVisible = PaperItemBuilder.ofType(Material.LIME_DYE)
-            .name(Component.text()
+    private static final ItemStack toggleVisible = ItemBuilder.of(Material.LIME_DYE)
+            .displayName(Component.text()
                     .append(Component.text("表示中"))
                     .decoration(TextDecoration.BOLD, true)
                     .decoration(TextDecoration.ITALIC, false)
@@ -192,8 +195,8 @@ public class SettingsMenu extends AbstractMenu {
                     .build()))
             .build();
 
-    private static final ItemStack close = PaperItemBuilder.ofType(Material.BARRIER)
-            .name(Component.text()
+    private static final ItemStack close = ItemBuilder.of(Material.BARRIER)
+            .displayName(Component.text()
                     .append(Component.text("とじる"))
                     .decoration(TextDecoration.BOLD, true)
                     .decoration(TextDecoration.ITALIC, false)
@@ -218,14 +221,28 @@ public class SettingsMenu extends AbstractMenu {
                 .addTransform(leggings())
                 .addTransform(boots())
                 //2段目
-                //toggle実装したけどなぜか自分の見た目だけ変わらなかったのでコマンドで代用
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("helmet", view.viewer().player()), context -> Keys.setToggleArmorType(view.viewer().player(), "helmet")), 1, 1))
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("chest", view.viewer().player()), context -> Keys.setToggleArmorType(view.viewer().player(), "chest")), 2, 1))
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("leggings", view.viewer().player()), context -> Keys.setToggleArmorType(view.viewer().player(), "leggings")), 3, 1))
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("boots", view.viewer().player()), context -> Keys.setToggleArmorType(view.viewer().player(), "boots")), 4, 1))
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("helmet", view.viewer().player()), context -> {
+                    sukesukeKey.setToggleArmorType(view.viewer().player(), sukesukeKey.helmet());
+                    armorPacketManager.sendPacket(view.viewer().player());
+                }), 1, 1))
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("chest", view.viewer().player()), context -> {
+                    sukesukeKey.setToggleArmorType(view.viewer().player(), sukesukeKey.chest());
+                    armorPacketManager.sendPacket(view.viewer().player());
+                }), 2, 1))
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("leggings", view.viewer().player()), context -> {
+                    sukesukeKey.setToggleArmorType(view.viewer().player(), sukesukeKey.leggings());
+                    armorPacketManager.sendPacket(view.viewer().player());
+                }), 3, 1))
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(toggleItem("boots", view.viewer().player()), context -> {
+                    sukesukeKey.setToggleArmorType(view.viewer().player(), sukesukeKey.boots());
+                    armorPacketManager.sendPacket(view.viewer().player());
+                }), 4, 1))
                 .addTransform(chestItem(ItemStackElement.of(help), 6, 1))
                 .addTransform(chestItem(ItemStackElement.of(bug), 7, 1))
-                .addTransform((pane, view) -> pane.element(ItemStackElement.of(close, context -> context.viewer().close()), 8, 1))
+                .addTransform((pane, view) -> pane.element(ItemStackElement.of(close, context -> {
+                    armorPacketManager.sendPacket(view.viewer().player());
+                    context.viewer().close();
+                }), 8, 1))
         .build();
     }
 
@@ -273,11 +290,11 @@ public class SettingsMenu extends AbstractMenu {
         };
     }
 
-    public ItemStack toggleItem(String Key, Player player) {
-        PaperItemBuilder.ofType(Material.BARRIER).build();
+    public ItemStack toggleItem(String key, Player player) {
+        ItemBuilder.of(Material.BARRIER).build();
         ItemStack item;
 
-        if (Objects.requireNonNull(player.getPersistentDataContainer().get(new NamespacedKey(sukesuke, Key), PersistentDataType.STRING)).equalsIgnoreCase("true")) {
+        if (Objects.requireNonNull(player.getPersistentDataContainer().get(new NamespacedKey(sukesuke, key), PersistentDataType.STRING)).equalsIgnoreCase("true")) {
             item = toggleInVisible;
         } else {
             item = toggleVisible;

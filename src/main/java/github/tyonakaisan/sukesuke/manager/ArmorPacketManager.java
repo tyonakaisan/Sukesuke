@@ -1,33 +1,40 @@
 package github.tyonakaisan.sukesuke.manager;
 
 import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
+import com.google.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-public class ArmorPacketManager {
+@DefaultQualifier(NonNull.class)
+public final class ArmorPacketManager {
     private final ArmorManager armorManager;
-    private final ProtocolManager protocolManager;
 
-    public ArmorPacketManager(ArmorManager am, ProtocolManager pm) {
-        this.armorManager = am;
-        this.protocolManager = pm;
+    @Inject
+    public ArmorPacketManager(
+            ArmorManager armorManager
+    ) {
+        this.armorManager = armorManager;
     }
 
     public void sendPacket(Player player) {
-        SelfPacket(player);
-        OthersPacket(player);
+        selfPacket(player);
+        othersPacket(player);
     }
 
-    public void SelfPacket(Player player) {
+    public void selfPacket(Player player) {
+        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+
         PlayerInventory inventory = player.getInventory();
 
         for (int i = 5; i <= 8; i++) {
@@ -38,15 +45,13 @@ public class ArmorPacketManager {
             ItemStack armor = armorManager.getArmor(i, inventory);
             packetSelf.getItemModifier().write(0, armor);
 
-            try {
-                protocolManager.sendServerPacket(player, packetSelf);
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            }
+            protocolManager.sendServerPacket(player, packetSelf);
         }
     }
 
-    public void OthersPacket(Player player) {
+    public void othersPacket(Player player) {
+        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
+
         PlayerInventory inv = player.getInventory();
 
         PacketContainer packetOthers = protocolManager.createPacket(PacketType.Play.Server.ENTITY_EQUIPMENT);
@@ -67,11 +72,7 @@ public class ArmorPacketManager {
     private static void broadcastPlayerPacket(ProtocolManager manager, PacketContainer packet, Player player) {
         for (Player p : Bukkit.getOnlinePlayers()) {
             if (p.getWorld().equals(player.getWorld()) && !p.equals(player)) {
-                try {
-                    manager.sendServerPacket(p, packet);
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+                manager.sendServerPacket(p, packet);
             }
         }
     }

@@ -1,19 +1,17 @@
 package github.tyonakaisan.sukesuke;
 
-import cloud.commandframework.CommandManager;
-import cloud.commandframework.execution.CommandExecutionCoordinator;
-import cloud.commandframework.paper.PaperCommandManager;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.Server;
-import org.bukkit.command.CommandSender;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
+import org.incendo.cloud.execution.ExecutionCoordinator;
+import org.incendo.cloud.paper.PaperCommandManager;
 
 import java.nio.file.Path;
-import java.util.function.Function;
 
 @DefaultQualifier(NonNull.class)
 public final class SuskesukeModule extends AbstractModule {
@@ -33,22 +31,11 @@ public final class SuskesukeModule extends AbstractModule {
 
     @Provides
     @Singleton
-    public CommandManager<CommandSender> commandManager() {
-        final PaperCommandManager<CommandSender> commandManager;
-        try {
-            commandManager = new PaperCommandManager<>(
-                    this.sukesuke,
-                    CommandExecutionCoordinator.simpleCoordinator(),
-                    Function.identity(),
-                    Function.identity()
-            );
-        } catch (final Exception exception) {
-            throw new RuntimeException("Failed to initialize command manager.", exception);
-        }
-        commandManager.registerAsynchronousCompletions();
-        return commandManager;
+    public PaperCommandManager<CommandSourceStack> commandManager() {
+        return PaperCommandManager.builder()
+                .executionCoordinator(ExecutionCoordinator.simpleCoordinator())
+                .buildOnEnable(this.sukesuke);
     }
-
 
     @Override
     public void configure() {

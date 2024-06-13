@@ -9,6 +9,8 @@ import java.awt.*;
 @DefaultQualifier(NonNull.class)
 public final class ColorUtils {
 
+    private ColorUtils() {}
+
     public static TextColor getGradientColor(double percentage, String startColor, String endColor) {
         Color start = Color.decode(startColor);
         Color end = Color.decode(endColor);

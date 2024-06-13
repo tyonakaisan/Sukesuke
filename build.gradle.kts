@@ -26,7 +26,7 @@ dependencies {
     compileOnly("io.papermc.paper", "paper-api", "1.20.6-R0.1-SNAPSHOT")
 
     //ProtocolLib
-    compileOnly("com.comphenix.protocol", "ProtocolLib", "5.2.0-SNAPSHOT")
+    compileOnly("com.comphenix.protocol", "ProtocolLib", "5.3.0-SNAPSHOT")
 
     // Command
     paperLibrary("org.incendo", "cloud-paper", "2.0.0-beta.8")
@@ -76,7 +76,7 @@ tasks {
         // Spark
         url("https://ci.lucko.me/job/spark/409/artifact/spark-bukkit/build/libs/spark-1.10.64-bukkit.jar")
         // ProtocolLib
-        url("https://ci.dmulloy2.net/job/ProtocolLib/699/artifact/build/libs/ProtocolLib.jar")
+        url("https://ci.dmulloy2.net/job/ProtocolLib/lastStableBuild/artifact/build/libs/ProtocolLib.jar")
     }
 
     compileJava {

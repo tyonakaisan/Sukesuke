@@ -34,7 +34,11 @@ public final class ArmorManager {
     }
 
     public ItemStack fakeArmorStack(final ItemStack itemStack, final Player player) {
-        if (itemStack.isEmpty() || itemStack.getType().equals(Material.ELYTRA) || itemStack.getItemMeta().getPersistentDataContainer().has(NamespacedKeyUtils.fake())) {
+        if (itemStack.isEmpty() || itemStack.getItemMeta().getPersistentDataContainer().has(NamespacedKeyUtils.fake())) {
+            return itemStack;
+        }
+
+        if (itemStack.getType().equals(Material.ELYTRA) && player.isGliding()) {
             return itemStack;
         }
 

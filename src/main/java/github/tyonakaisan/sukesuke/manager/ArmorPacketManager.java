@@ -7,11 +7,14 @@ import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.Pair;
 import com.google.inject.Inject;
 import github.tyonakaisan.sukesuke.utils.NamespacedKeyUtils;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
 
 import java.util.ArrayList;
@@ -23,6 +26,13 @@ public final class ArmorPacketManager {
 
     private final ArmorManager armorManager;
     private final Server server;
+
+    private static final Map<Integer, NamespacedKey> ARMOR_SLOTS = Map.of(
+            5, NamespacedKeyUtils.helmet(),
+            6, NamespacedKeyUtils.chest(),
+            7, NamespacedKeyUtils.leggings(),
+            8, NamespacedKeyUtils.boots()
+    );
 
     @Inject
     public ArmorPacketManager(
@@ -38,13 +48,27 @@ public final class ArmorPacketManager {
         this.othersPacket(player);
     }
 
+    public void selfPacketShowingElytra(final Player player) {
+        final var packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.SET_SLOT);
+        packet.getIntegers().write(0, 0);
+        packet.getIntegers().write(2, 6);
+
+        final @Nullable ItemStack itemStack = player.getInventory().getChestplate();
+
+        if (itemStack == null || !itemStack.getType().equals(Material.ELYTRA)) {
+            return;
+        }
+
+        final var cloneStack = itemStack.clone();
+        cloneStack.editMeta(itemMeta -> {
+            itemMeta.getPersistentDataContainer().set(NamespacedKeyUtils.fake(), PersistentDataType.BOOLEAN, true);
+        });
+
+        packet.getItemModifier().write(0, cloneStack);
+        ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
+    }
+
     public void selfPacket(final Player player) {
-        final Map<Integer, NamespacedKey> armorSlots = Map.of(
-                5, NamespacedKeyUtils.helmet(),
-                6, NamespacedKeyUtils.chest(),
-                7, NamespacedKeyUtils.leggings(),
-                8, NamespacedKeyUtils.boots()
-        );
         final List<PacketContainer> packets = new ArrayList<>();
 
         for (int i = 5; i <= 8; i++) {
@@ -53,11 +77,11 @@ public final class ArmorPacketManager {
             packet.getIntegers().write(2, i);
 
             final var armor = this.armorManager.getArmorOrAir(i, player.getInventory());
-            final var test = NamespacedKeyUtils.isValueTrue(player, NamespacedKeyUtils.display()) && NamespacedKeyUtils.isValueTrue(player, armorSlots.get(i))
+            final var itemStack = NamespacedKeyUtils.isValueTrue(player, NamespacedKeyUtils.display()) && NamespacedKeyUtils.isValueTrue(player, ARMOR_SLOTS.get(i))
                     ? this.armorManager.fakeArmorStack(armor, player)
                     : armor;
 
-            packet.getItemModifier().write(0, test);
+            packet.getItemModifier().write(0, itemStack);
 
             packets.add(packet);
         }

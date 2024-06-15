@@ -4,7 +4,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
 import github.tyonakaisan.sukesuke.listener.GameModeChangeListener;
-import github.tyonakaisan.sukesuke.listener.PlayerGlideListener;
 import github.tyonakaisan.sukesuke.packet.OthersPacketListener;
 import github.tyonakaisan.sukesuke.packet.SelfPacketListener;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
@@ -44,7 +43,6 @@ public final class SuskesukeModule extends AbstractModule {
     private void configureListeners() {
         final Multibinder<Listener> listeners = Multibinder.newSetBinder(this.binder(), Listener.class);
         listeners.addBinding().to(GameModeChangeListener.class).in(Scopes.SINGLETON);
-        listeners.addBinding().to(PlayerGlideListener.class).in(Scopes.SINGLETON);
         listeners.addBinding().to(OthersPacketListener.class).in(Scopes.SINGLETON);
         listeners.addBinding().to(SelfPacketListener.class).in(Scopes.SINGLETON);
     }

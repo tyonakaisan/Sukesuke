@@ -111,7 +111,8 @@ public final class SelfPacketListener implements Listener {
         }
 
         final var clickType = packet.getEnumModifier(InventoryClickType.class, 4).read(0);
-        if (!(clickType.equals(InventoryClickType.QUICK_MOVE) || clickType.equals(InventoryClickType.SWAP))) {
+        // InventoryClickType.SWAP is not checked here because it is used to switch elytra
+        if (!clickType.equals(InventoryClickType.QUICK_MOVE)) {
             return;
         }
 

@@ -2,150 +2,161 @@ package github.tyonakaisan.sukesuke.packet;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.reflect.StructureModifier;
+import com.comphenix.protocol.wrappers.BukkitConverters;
+import com.comphenix.protocol.wrappers.Converters;
+import com.google.inject.Inject;
 import github.tyonakaisan.sukesuke.Sukesuke;
 import github.tyonakaisan.sukesuke.manager.ArmorManager;
-import github.tyonakaisan.sukesuke.manager.SukesukeKey;
+import github.tyonakaisan.sukesuke.utils.NamespacedKeyUtils;
 import org.bukkit.GameMode;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.event.Listener;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 @DefaultQualifier(NonNull.class)
-public final class SelfPacketListener {
+public final class SelfPacketListener implements Listener {
 
     private final Sukesuke sukesuke;
-    private final SukesukeKey sukesukeKey;
     private final ArmorManager armorManager;
 
+    private static final Map<Integer, NamespacedKey> ARMOR_SLOTS = Map.of(
+            5, NamespacedKeyUtils.helmet(),
+            6, NamespacedKeyUtils.chest(),
+            7, NamespacedKeyUtils.leggings(),
+            8, NamespacedKeyUtils.boots()
+    );
+
+    @Inject
     public SelfPacketListener(
-            Sukesuke sukesuke,
-            SukesukeKey sukesukeKey,
-            ArmorManager armorManager
+            final Sukesuke sukesuke,
+            final ArmorManager armorManager
     ) {
         this.sukesuke = sukesuke;
-        this.sukesukeKey = sukesukeKey;
         this.armorManager = armorManager;
 
-        selfPacketListener();
+        this.selfPacketListener();
     }
 
     public void selfPacketListener() {
-        ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-
-        PacketAdapter.AdapterParameteters params = PacketAdapter.params().plugin(sukesuke)
+        final var params = PacketAdapter.params()
+                .plugin(this.sukesuke)
                 .listenerPriority(ListenerPriority.HIGH)
-                .types(PacketType.Play.Server.SET_SLOT, PacketType.Play.Server.WINDOW_ITEMS);
+                .types(PacketType.Play.Server.SET_SLOT, PacketType.Play.Server.WINDOW_ITEMS, PacketType.Play.Client.WINDOW_CLICK);
 
-        protocolManager.addPacketListener(new PacketAdapter(params) {
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(params) {
             @Override
-            public void onPacketSending(PacketEvent event) {
-                PacketContainer packet = event.getPacket();
-                Player player = event.getPlayer();
-                var pdc = player.getPersistentDataContainer();
-                //もりぱぱっち
-                if (!pdc.has(sukesukeKey.toggle())) {
-                    sukesukeKey.setHideArmorKeys(player);
+            public void onPacketSending(final PacketEvent event) {
+                final var packet = event.getPacket();
+                final var player = event.getPlayer();
+
+                if (!player.hasPermission("sukesuke.suke")) {
+                    return;
                 }
 
-                //パーミッションチェック
-                if (player.hasPermission("sukesuke.suke")) {
-                    //self_toggle = falseであれば or Creativeモード であれば返す
-                    if (Objects.requireNonNull(pdc.get(sukesukeKey.toggle(), PersistentDataType.STRING)).equalsIgnoreCase("false")
-                            || player.getGameMode().equals(GameMode.CREATIVE)) return;
-
-                    //SET_SLOT
-                    if (packet.getType().equals(PacketType.Play.Server.SET_SLOT) && packet.getIntegers().read(0).equals(0) && packet.getIntegers().read(2) > 4 && packet.getIntegers().read(2) < 9) {
-                        switch (packet.getIntegers().read(2)) {
-                            case 5 -> {
-                                StructureModifier<ItemStack> itemModifier = packet.getItemModifier();
-                                ItemStack itemStack = itemModifier.read(0);
-
-                                //false(表示)だったら
-                                if (Objects.requireNonNull(pdc.get(sukesukeKey.helmet(), PersistentDataType.STRING)).equalsIgnoreCase("false")) {
-                                    itemModifier.write(0, itemStack);
-                                }
-
-                                //true(非表示)だったら
-                                else {
-                                    itemModifier.write(0, armorManager.hideArmor(itemStack));
-                                }
-                            }
-                            case 6 -> {
-                                ItemStack itemStack = packet.getItemModifier().read(0);
-
-                                //false(表示)だったら
-                                if (Objects.requireNonNull(pdc.get(sukesukeKey.chest(), PersistentDataType.STRING)).equalsIgnoreCase("false")) {
-                                    packet.getItemModifier().write(0, itemStack);
-                                }
-
-                                //true(非表示)だったら
-                                else {
-                                    packet.getItemModifier().write(0, armorManager.hideArmor(itemStack));
-                                }
-                            }
-                            case 7 -> {
-                                ItemStack itemStack = packet.getItemModifier().read(0);
-
-                                //false(表示)だったら
-                                if (Objects.requireNonNull(pdc.get(sukesukeKey.leggings(), PersistentDataType.STRING)).equalsIgnoreCase("false")) {
-                                    packet.getItemModifier().write(0, itemStack);
-                                }
-
-                                //true(非表示)だったら
-                                else {
-                                    packet.getItemModifier().write(0, armorManager.hideArmor(itemStack));
-                                }
-                            }
-                            case 8 -> {
-                                ItemStack itemStack = packet.getItemModifier().read(0);
-
-                                //false(表示)だったら
-                                if (Objects.requireNonNull(pdc.get(sukesukeKey.boots(), PersistentDataType.STRING)).equalsIgnoreCase("false")) {
-                                    packet.getItemModifier().write(0, itemStack);
-                                }
-
-                                //true(非表示)だったら
-                                else {
-                                    packet.getItemModifier().write(0, armorManager.hideArmor(itemStack));
-                                }
-                            }
-                        }
-                    }
-                    //WINDOW_ITEMS
-                    if (packet.getType().equals(PacketType.Play.Server.WINDOW_ITEMS) && packet.getIntegers().read(0).equals(0)) {
-                        List<ItemStack> itemStacks = packet.getItemListModifier().read(0);
-
-                        if (Objects.requireNonNull(pdc.get(sukesukeKey.helmet(), PersistentDataType.STRING)).equalsIgnoreCase("true")) {
-                            ItemStack armor = itemStacks.get(5);
-                            armor.setItemMeta(armorManager.hideArmor(armor).getItemMeta());
-                        }
-                        if (Objects.requireNonNull(pdc.get(sukesukeKey.chest(), PersistentDataType.STRING)).equalsIgnoreCase("true")) {
-                            ItemStack armor = itemStacks.get(6);
-                            armor.setItemMeta(armorManager.hideArmor(armor).getItemMeta());
-                        }
-                        if (Objects.requireNonNull(pdc.get(sukesukeKey.leggings(), PersistentDataType.STRING)).equalsIgnoreCase("true")) {
-                            ItemStack armor = itemStacks.get(7);
-                            armor.setItemMeta(armorManager.hideArmor(armor).getItemMeta());
-                        }
-                        if (Objects.requireNonNull(pdc.get(sukesukeKey.boots(), PersistentDataType.STRING)).equalsIgnoreCase("true")) {
-                            ItemStack armor = itemStacks.get(8);
-                            armor.setItemMeta(armorManager.hideArmor(armor).getItemMeta());
-                        }
-                    }
-
+                if (!NamespacedKeyUtils.isValueTrue(player, NamespacedKeyUtils.display()) || player.getGameMode().equals(GameMode.CREATIVE)) {
+                    return;
                 }
+
+                setSlotPacket(packet, player);
+                windowItemsPacket(packet, player);
+            }
+
+            @Override
+            public void onPacketReceiving(final PacketEvent event) {
+                final var packet = event.getPacket();
+
+                containerClickPacket(packet, event.getPlayer());
             }
         });
+    }
+
+    private void setSlotPacket(final PacketContainer packet, final Player player) {
+        if (!packet.getType().equals(PacketType.Play.Server.SET_SLOT) || !this.isPlayerWindow(packet)) {
+            return;
+        }
+
+        final var slotId = packet.getIntegers().read(2);
+        if (this.isArmorSlot(slotId)) {
+            final var namespacedKey = ARMOR_SLOTS.get(slotId);
+            this.writeItemModifier(packet, player, NamespacedKeyUtils.isValueTrue(player, namespacedKey));
+        }
+    }
+
+    private void windowItemsPacket(final PacketContainer packet, final Player player) {
+        if (packet.getType() != PacketType.Play.Server.WINDOW_ITEMS || !this.isPlayerWindow(packet)) {
+            return;
+        }
+
+        final var itemStacks = packet.getItemListModifier().read(0);
+        ARMOR_SLOTS.forEach((slot, key) -> {
+            if (NamespacedKeyUtils.isValueTrue(player, key)) {
+                itemStacks.set(slot, this.armorManager.fakeArmorStack(itemStacks.get(slot), player));
+            }
+        });
+
+        packet.getItemListModifier().write(0, itemStacks);
+    }
+
+    private void containerClickPacket(final PacketContainer packet, final Player player) {
+        if (!packet.getType().equals(PacketType.Play.Client.WINDOW_CLICK) || !this.isPlayerWindow(packet)) {
+            return;
+        }
+
+        final var clickType = packet.getEnumModifier(InventoryClickType.class, 4).read(0);
+        if (!(clickType.equals(InventoryClickType.QUICK_MOVE) || clickType.equals(InventoryClickType.SWAP))) {
+            return;
+        }
+
+        final var slotDataModifier = packet.getStructures()
+                .read(2)
+                .getMaps(Converters.passthrough(int.class), BukkitConverters.getItemStackConverter());
+
+        final var slotDataMap = slotDataModifier.read(0);
+
+        slotDataMap.entrySet()
+                .stream()
+                .filter(entry -> this.isArmorSlot(entry.getKey()) && !entry.getValue().isEmpty())
+                .filter(entry -> NamespacedKeyUtils.isValueTrue(player, ARMOR_SLOTS.get(entry.getKey())))
+                .forEach(entry -> slotDataMap.put(entry.getKey(), this.armorManager.fakeArmorStack(entry.getValue(), player)));
+
+        slotDataModifier.write(0, slotDataMap);
+    }
+
+    private void writeItemModifier(final PacketContainer packet, final Player player, final boolean hide) {
+        final var itemModifier = packet.getItemModifier();
+        final var itemStack = itemModifier.read(0);
+        final var fakeArmor = hide
+                ? this.armorManager.fakeArmorStack(itemStack, player)
+                : itemStack;
+
+        itemModifier.write(0, fakeArmor);
+    }
+
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private boolean isPlayerWindow(final PacketContainer packet) {
+        final var windowId = packet.getIntegers().read(0);
+        return windowId == 0;
+    }
+
+    private boolean isArmorSlot(final int slotId) {
+        return slotId > 4 && slotId < 9;
+    }
+
+    private enum InventoryClickType {
+        PICKUP,
+        QUICK_MOVE,
+        SWAP,
+        CLONE,
+        THROW,
+        QUICK_CRAFT,
+        PICKUP_ALL
     }
 }

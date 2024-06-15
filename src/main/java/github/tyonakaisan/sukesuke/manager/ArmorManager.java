@@ -47,6 +47,8 @@ public final class ArmorManager {
                 itemMeta.displayName(this.messages.translatable(Messages.Style.INFO, player, "armor.hidden_icon").appendSpace().append(displayName));
             }
 
+            itemStack.getItemMeta().getEnchants().forEach((enchantment, level) -> itemMeta.addEnchant(enchantment, level, false));
+
             itemMeta.lore(
                     List.of(Component.empty(),
                             this.getItemDurability(itemStack, player))

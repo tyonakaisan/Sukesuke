@@ -1,6 +1,7 @@
 package github.tyonakaisan.sukesuke.manager;
 
 import com.google.inject.Inject;
+import github.tyonakaisan.sukesuke.config.ConfigFactory;
 import github.tyonakaisan.sukesuke.message.Messages;
 import github.tyonakaisan.sukesuke.utils.NamespacedKeyUtils;
 import net.kyori.adventure.text.Component;
@@ -25,12 +26,15 @@ import static github.tyonakaisan.sukesuke.utils.ColorUtils.getGradientColor;
 public final class ArmorManager {
 
     private final Messages messages;
+    private final ConfigFactory configFactory;
 
     @Inject
     public ArmorManager(
-            final Messages messages
+            final Messages messages,
+            final ConfigFactory configFactory
     ) {
         this.messages = messages;
+        this.configFactory = configFactory;
     }
 
     public ItemStack fakeArmorStack(final ItemStack itemStack, final Player player) {
@@ -39,6 +43,10 @@ public final class ArmorManager {
         }
 
         if (itemStack.getType().equals(Material.ELYTRA) && player.isGliding()) {
+            return itemStack;
+        }
+
+        if (this.configFactory.primaryConfig().notAllowedArmors().contains(itemStack.getType())) {
             return itemStack;
         }
 

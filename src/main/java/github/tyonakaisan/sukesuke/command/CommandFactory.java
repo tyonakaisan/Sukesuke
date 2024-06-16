@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import github.tyonakaisan.sukesuke.command.commands.DebugCommand;
+import github.tyonakaisan.sukesuke.command.commands.ReloadCommand;
 import github.tyonakaisan.sukesuke.command.commands.SettingsCommand;
 import github.tyonakaisan.sukesuke.command.commands.ToggleCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -23,6 +24,7 @@ import java.util.List;
 public final class CommandFactory {
 
     private final DebugCommand debugCommand;
+    private final ReloadCommand reloadCommand;
     private final SettingsCommand settingsCommand;
     private final ToggleCommand toggleCommand;
 
@@ -32,10 +34,12 @@ public final class CommandFactory {
     @Inject
     public CommandFactory(
             final DebugCommand debugCommand,
+            final ReloadCommand reloadCommand,
             final SettingsCommand settingsCommand,
             final ToggleCommand toggleCommand
     ) {
         this.debugCommand = debugCommand;
+        this.reloadCommand = reloadCommand;
         this.settingsCommand = settingsCommand;
         this.toggleCommand = toggleCommand;
     }
@@ -62,6 +66,7 @@ public final class CommandFactory {
     private LiteralCommandNode<CommandSourceStack> pluginCommands() {
         return this.literal()
                 .then(this.debugCommand.init())
+                .then(this.reloadCommand.init())
                 .then(this.settingsCommand.init())
                 .then(this.toggleCommand.init())
                 .build();
